@@ -1,24 +1,37 @@
-# shell.nix — Python 3.12.11 dev shell
+# shell.nix — force the whole world onto Python 3.12.11, avoid Sphinx test flakiness
 
 with import (builtins.fetchGit {
   url = "https://github.com/NixOS/nixpkgs";
   rev = "8cbadfa068534bdd8238eea362d2bf0b1d46b7e8"; # commit with 3.12.11
-}) { config.allowUnfree = true; };
+}) {
+  config.allowUnfree = true;
+
+  # Make *every* reference to python3/python3Packages be 3.12-bound.
+  overlays = [
+    (final: prev:
+      let
+        py = prev.python312;
+        pyPkgsBase = prev.python3Packages.override { python = py; };
+      in {
+        # Replace the default python3 (was 3.13 at this rev) with 3.12
+        python3 = py;
+
+        # Replace the default package set with one bound to 3.12,
+        # and also disable Sphinx checks to avoid flaky builds.
+        python3Packages = pyPkgsBase.overrideScope (f: p: {
+          sphinx = p.sphinx.overrideAttrs (_: { doCheck = false; });
+          pip    = p.pip.overrideAttrs    (_: { doCheck = false; });
+        });
+      })
+  ];
+};
 
 let
-  py       = pkgs.python312;
-
-  # Bind the generic python3Packages set to Python 3.12
-  pyPkgsBase = pkgs.python3Packages.override { python = py; };
-
-  # Disable sphinx tests to avoid flaky builds and accidental 3.13 pulls
-  pyPkgs = pyPkgsBase.overrideScope (final: prev: {
-    sphinx = prev.sphinx.overrideAttrs (_: { doCheck = false; });
-  });
-
-  libPath  = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.zlib ];
+  py     = pkgs.python3;               # now == python312
+  pyPkgs = pkgs.python3Packages;       # now bound to python312
+  libPath = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.zlib ];
 in
-mkShell {
+pkgs.mkShell {
   venvDir = "./_venv";
 
   buildInputs =
