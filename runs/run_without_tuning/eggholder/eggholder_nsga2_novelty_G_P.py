@@ -46,7 +46,29 @@ def run():
         k_neighbor=15,
         #novelty_search_type=MinimalCriteria(min_examples_matched=2)
     )
-
+    rule_discovery = NSGA2Novelty_G_P(
+        n_iter=10,
+        mu=mu,
+        lmbda=64,
+        origin_generation=origin.SquaredError(),
+        mutation=mutation.HalfnormIncrease(sigma=1.22,
+                                           matching_type=rule.matching.OrderedBound([-1, 1])),
+        init=rule.initialization.MeanInit(
+            fitness=rule.fitness.MooFitness(),
+            model=Ridge(alpha=0.01, random_state=random_state),
+            matching_type=rule.matching.OrderedBound([-1, 1])
+        ),
+        fitness_objs = [
+            lambda r: r.error_,
+        ],
+        fitness_objs_labels = [
+            "Error",
+        ],
+        novelty_mode="P",
+        min_experience=2,
+        max_restarts=5,
+        keep_archive_across_restarts=True,
+    )
 
     rule_discovery.pool_ = []
     rule_pool = []

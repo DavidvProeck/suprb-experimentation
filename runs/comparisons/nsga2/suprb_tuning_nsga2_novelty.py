@@ -67,7 +67,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 sigma=1.22  # <- tuned
             ),
             fitness_objs=[lambda r: r.error_],
-            fitness_objs_labels=["Error"],
+            fitness_objs_labels=["Error"], # novelty objective is added internally
             novelty_calc=NoveltyCalculation(
                 k_neighbor=15,
                 novelty_search_type=MinimalCriteria(min_examples_matched=15)  # <- tuned
@@ -75,7 +75,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             novelty_mode="P",  # <- tuned
             profile=False,
             min_experience=0,
-            max_restarts=5,  # <- tuned
+            max_restarts=4,
             keep_archive_across_restarts=True,
         ),
         solution_composition=ga.GeneticAlgorithm(
@@ -122,8 +122,6 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
         params.rule_discovery__novelty_mode = trial.suggest_categorical(
             'rule_discovery__novelty_mode', ['G', 'P']
         )
-
-        params.rule_discovery__max_restarts = trial.suggest_int('rule_discovery__max_restarts', 0, 10)
 
         #GA is FIXED
         # Mixing

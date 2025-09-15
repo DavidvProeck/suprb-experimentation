@@ -81,7 +81,6 @@ def base_rule_discovery(mutation, random_state=42):
         min_experience = min_experience,
         max_restarts = max_restarts,
         keep_archive_across_restarts = keep_archive_across_restarts,
-        p = p,
     )
 
     rule_discovery.pool_ = []
