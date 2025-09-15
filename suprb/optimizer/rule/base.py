@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 from joblib import Parallel, delayed
@@ -106,4 +106,44 @@ class ParallelSingleRuleDiscovery(RuleDiscovery, metaclass=ABCMeta):
         initial_rule: Rule,
         random_state: RandomState,
     ) -> Optional[Rule]:
+        pass
+
+
+class MultiRuleDiscovery(RuleDiscovery, metaclass=ABCMeta):
+    """
+    Implements basic functionality to return all Pareto-optimal rules in one run,
+    then let the caller pick the top n_rules.
+    """
+
+    def optimize(self, X: np.array, y: np.array, n_rules: int = 1) -> List[Rule]:
+        self.random_state_ = check_random_state(self.random_state)
+        random_state = self.random_state_
+
+        origin = self.origin_generation(
+            n_rules = 1,
+            X=X,
+            y=y,
+            pool=self.pool_,
+            elitist=self.elitist_,
+            random_state=random_state
+        )[0]
+
+        init_rule = self.constraint(self.init(mean=origin, random_state=random_state)).fit(X,y)
+
+        all_rules = self._optimize(X, y, init_rule, random_state) or []
+
+        valid = self._filter_invalid_rules(X=X, y=y, rules=all_rules)
+
+        if len(valid) < n_rules:
+            print(f"Warning: Requested {n_rules} but only {len(valid)} Pareto-optimal rule(s) generated.")
+        
+        return valid[:n_rules]
+    
+    def _optimize(
+            self,
+            X: np.array,
+            y: np.array,
+            initial_rule: Rule,
+            random_state: RandomState,
+    ) -> Optional[List[Rule]]:
         pass

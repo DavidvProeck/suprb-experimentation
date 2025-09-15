@@ -13,13 +13,13 @@ from suprb.optimizer.solution.ga import GeneticAlgorithm
 from utils import log_scores
 
 
-def load_higdon_gramacy_lee(n_samples=1000, noise=0, random_state=None):
+def load_higdon_gramacy_lee(n_samples=500, noise=0, random_state=None):
     random_state_ = check_random_state(random_state)
 
     X = np.linspace(0, 20, num=n_samples)
     y = np.zeros(n_samples)
-
-    y[X < 10] = np.sin(np.pi * X[X < 10] / 5) + 0.2 * np.cos(4 * np.pi * X[X < 10] / 5)
+    y[X <= 4] = X[X <= 4] / 10 - 1
+    y[(X < 10) & (X >= 5)] = 1 + 0.5 * np.sin(4 * X[(X < 10) & (X >= 5)]) * 0.2 * X[(X < 10) & (X >= 5)]
     y[X >= 10] = X[X >= 10] / 10 - 1
 
     y += random_state_.normal(scale=noise, size=n_samples)

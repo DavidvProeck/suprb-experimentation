@@ -33,6 +33,11 @@ class NoveltyCalculation(BaseComponent):
             if not hasattr(rule, "idx_") or rule.idx_ > len(archive):
                 rule.distances_ = []
                 for archive_rule in archive:
+
+                    #TODO: check if this works
+                    
+                    if not hasattr(archive_rule, 'distances_'):
+                        archive_rule.distances_ = []
                     hamming_distance = hamming(rule.match_set_, archive_rule.match_set_)
                     archive_rule.distances_.append(hamming_distance)
                     rule.distances_.append(hamming_distance)

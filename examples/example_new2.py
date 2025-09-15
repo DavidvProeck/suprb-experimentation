@@ -18,9 +18,7 @@ def load_higdon_gramacy_lee(n_samples=1000, noise=0, random_state=None):
 
     X = np.linspace(0, 20, num=n_samples)
     y = np.zeros(n_samples)
-
-    y[X < 10] = np.sin(np.pi * X[X < 10] / 5) + 0.2 * np.cos(4 * np.pi * X[X < 10] / 5)
-    y[X >= 10] = X[X >= 10] / 10 - 1
+    y[X >= 0] = np.cos(4 * X[X >= 0])
 
     y += random_state_.normal(scale=noise, size=n_samples)
     X = X.reshape((-1, 1))
@@ -56,7 +54,7 @@ if __name__ == "__main__":
         X_train,
         y_train,
         cv=4,
-        n_jobs=1,
+        n_jobs=32,
         verbose=10,
         scoring=["r2", "neg_mean_squared_error"],
         return_estimator=True,
