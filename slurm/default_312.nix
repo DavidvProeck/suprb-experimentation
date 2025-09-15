@@ -6,17 +6,25 @@ with import (builtins.fetchGit {
 }) { config.allowUnfree = true; };
 
 let
-  py      = pkgs.python312;
-  pyPkgs  = pkgs.python3Packages.override { python = py; }; # bind generic set to 3.12
-  libPath = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.zlib ];
+  py       = pkgs.python312;
+
+  # Bind the generic python3Packages set to Python 3.12
+  pyPkgsBase = pkgs.python3Packages.override { python = py; };
+
+  # IMPORTANT: stop sphinx from running its flaky test suite
+  pyPkgs = pyPkgsBase.overrideScope' (final: prev: {
+    sphinx = prev.sphinx.overrideAttrs (_: { doCheck = false; });
+  });
+
+  libPath  = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc pkgs.zlib ];
 in
 mkShell {
   venvDir = "./_venv";
 
   buildInputs =
     [
-      py                   # Python 3.12.11 interpreter
-      pyPkgs.venvShellHook # venv activation hook for this interpreter
+      py                  # Python 3.12.11 interpreter
+      pyPkgs.venvShellHook
       pyPkgs.pip
       pyPkgs.wheel
       pkgs.stdenv.cc.cc
