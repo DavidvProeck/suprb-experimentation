@@ -11,8 +11,8 @@ let
   # Bind the generic python3Packages set to Python 3.12
   pyPkgsBase = pkgs.python3Packages.override { python = py; };
 
-  # IMPORTANT: stop sphinx from running its flaky test suite
-  pyPkgs = pyPkgsBase.overrideScope' (final: prev: {
+  # Disable sphinx tests to avoid flaky builds and accidental 3.13 pulls
+  pyPkgs = pyPkgsBase.overrideScope (final: prev: {
     sphinx = prev.sphinx.overrideAttrs (_: { doCheck = false; });
   });
 
