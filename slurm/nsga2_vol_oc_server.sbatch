@@ -22,4 +22,4 @@ dataset="airfoil_self_noise"
 study_name="SupRB-Airfoil-NSGA2-Volume"
 
 srun nix-shell $JOB_DIR/slurm/default_312.nix --command "PYTHONPATH=$JOB_DIR/$PYTHONPATH \
-python $JOB_DIR/$experiment -p $dataset -j $SLURM_JOB_ID -n $study_name"
+python $JOB_DIR/$experiment -p $dataset -j $SLURM_JOB_ID"
