@@ -3,6 +3,7 @@ from typing import Union, Callable, Any
 
 import numpy as np
 import sklearn
+from sklearn.metrics import get_scorer
 from sklearn.base import BaseEstimator, clone
 from sklearn.model_selection import cross_validate
 from sklearn.utils import Bunch
@@ -11,7 +12,12 @@ from . import metrics
 
 
 def _validate_sklearn_metric(metric: str) -> bool:
-    return metric in sklearn.metrics.SCORERS.keys()
+    #return metric in sklearn.metrics.SCORERS.keys()
+    try:
+        get_scorer(metric)
+        return True
+    except KeyError:
+        return False
 
 
 def _validate_own_metric(metric: str) -> bool:
