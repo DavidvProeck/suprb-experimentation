@@ -60,10 +60,10 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             init=rule.initialization.MeanInit(
                 fitness=rule.fitness.MooFitness(),  # dummy fitness for MOO
                 model=Ridge(alpha=0.01, random_state=random_state),
-                matching_type=rule.matching.OrderedBound([-1, 1])
+                #matching_type=rule.matching.OrderedBound([-1, 1])
             ),
             mutation=mutation.Normal(
-                matching_type=rule.matching.OrderedBound([-1, 1]),
+                #matching_type=rule.matching.OrderedBound([-1, 1]),
                 sigma=1.22  # <- tuned
             ),
             fitness_objs=[lambda r: r.error_],
