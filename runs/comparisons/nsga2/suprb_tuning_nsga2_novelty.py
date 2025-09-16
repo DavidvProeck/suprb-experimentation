@@ -70,11 +70,11 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             fitness_objs_labels=["Error"], # novelty objective is added internally
             novelty_calc=NoveltyCalculation(
                 k_neighbor=15,
-                novelty_search_type=MinimalCriteria(min_examples_matched=15)  # <- tuned
+                #novelty_search_type=MinimalCriteria(min_examples_matched=15)  # <- tuned #TODO: Leads to warnings in crowding distance calculation.
             ),
             novelty_mode="P",  # <- tuned
             profile=False,
-            min_experience=0,
+            min_experience=2, #Rules that match only one sample are considered trivial, so min_experience >= 2
             max_restarts=4,
             keep_archive_across_restarts=True,
         ),
@@ -115,12 +115,16 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             'rule_discovery__mutation__sigma', 0.05, sigma_hi
         )
 
-        params.rule_discovery__novelty_calc__novelty_search_type__min_examples_matched = trial.suggest_int(
-            'rule_discovery__min_examples_matched', 0, 30
-        )
+        # params.rule_discovery__novelty_calc__novelty_search_type__min_examples_matched = trial.suggest_int(
+        #     'rule_discovery__min_examples_matched', 0, 30
+        # )
 
         params.rule_discovery__novelty_mode = trial.suggest_categorical(
             'rule_discovery__novelty_mode', ['G', 'P']
+        )
+
+        params.rule_discovery__min_experience = trial.suggest_int(
+            'rule_discovery__min_experience', 2, 32
         )
 
         #GA is FIXED
