@@ -17,7 +17,7 @@ echo "PATH: $PATH"
 echo "PYTHONPATH: $PYTHONPATH"
 echo "================================"
 
-experiment="runs/comparisons/suprb_tuning_nsga2_novelty.py"
+experiment="runs/comparisons/nsga2/suprb_tuning_nsga2_novelty.py"
 dataset="airfoil_self_noise"
 study_name="SupRB-Airfoil-NSGA2-Novelty"
 
