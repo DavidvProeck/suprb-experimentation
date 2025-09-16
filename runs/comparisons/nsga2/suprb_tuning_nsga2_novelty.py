@@ -22,7 +22,7 @@ from suprb.optimizer.solution import ga
 from suprb.optimizer.rule import origin, mutation
 import suprb.solution.mixing_model as mixing_model
 
-from suprb.optimizer.rule.nsga2 import nsga2
+from suprb.optimizer.rule import nsga2
 from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 from suprb.optimizer.rule.ns.novelty_search_type import MinimalCriteria
 
