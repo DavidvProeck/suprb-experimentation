@@ -43,6 +43,6 @@ python runs/run_without_tuning/example_1_nsga2.py
 
 
 cd /home/vonproda/Desktop/BA/ba_suprb-experimentation
-export PYTHONPATH=/home/vonproda/Desktop/BA/ba_suprb-experimentation/src/suprb:$PYTHONPATH
+export PYTHONPATH=/home/vonproda/Desktop/BA/suprb-experimentation/src/suprb:$PYTHONPATH
 #conda activate venv
 python runs/run_without_tuning/eggholder/eggholder_nsga2_novelty_G_P.py

@@ -1,6 +1,7 @@
 -e git+https://github.com/heidmic/suprb@master#egg=suprb
 -e git+https://github.com/dpaetzel/cmpbayes@main#egg=cmpbayes
 
+numpy
 arviz==0.21.0
 click==8.2.1
 ipython==9.4.0
