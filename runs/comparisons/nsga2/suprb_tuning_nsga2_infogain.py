@@ -22,9 +22,10 @@ from suprb.optimizer.solution import ga
 from suprb.optimizer.rule import origin, mutation
 import suprb.solution.mixing_model as mixing_model
 
-from suprb.optimizer.rule.nsga2 import nsga2
 from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 from suprb.optimizer.rule.ns.novelty_search_type import MinimalCriteria
+
+from suprb.optimizer.rule.nsga2 import NSGA2InfoGain
 
 random_state = 42
 
@@ -53,7 +54,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     X, y = shuffle(X, y, random_state=random_state)
 
     estimator = SupRB(
-        rule_discovery=nsga2.NSGA2InfoGain(
+        rule_discovery=NSGA2InfoGain(
             n_iter=16,     # <- tuned
             mu=16,         # <- tuned
             lmbda=64,      # <- tuned
