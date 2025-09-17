@@ -26,6 +26,8 @@ from suprb.optimizer.rule import nsga2
 from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 from suprb.optimizer.rule.ns.novelty_search_type import MinimalCriteria
 
+from suprb.optimizer.rule.nsga2 import NSGA2Novelty_G_P
+
 random_state = 42
 
 
@@ -43,8 +45,9 @@ def load_dataset(name: str, **kwargs) -> tuple[np.ndarray, np.ndarray]:
 @click.option('-f', '--filter_subpopulation', type=click.STRING, default='FilterSubpopulation')
 @click.option('-e', '--experience_calculation', type=click.STRING, default='ExperienceCalculation')
 @click.option('-w', '--experience_weight', type=click.INT, default=1)
+@click.option('-n', '--study_name', type=click.STRING, default=None)
 def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
-        experience_calculation: str, experience_weight: int):
+        experience_calculation: str, experience_weight: int, study_name: str):
     print(f"Problem is {problem}, with job id {job_id}")
 
     X, y = load_dataset(name=problem, return_X_y=True)
@@ -52,7 +55,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     X, y = shuffle(X, y, random_state=random_state)
 
     estimator = SupRB(
-        rule_discovery=nsga2.NSGA2Novelty_G_P(
+        rule_discovery=NSGA2Novelty_G_P(
             n_iter=16,     # <- tuned
             mu=16,         # <- tuned
             lmbda=64,      # <- tuned
@@ -145,7 +148,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
 
-    experiment_name = f'SupRB NSGA2+Novelty RD-tuned j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}'
+    experiment_name = f'SupRB NSGA2+Novelty RD-tuned j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name, verbose=10)
 
