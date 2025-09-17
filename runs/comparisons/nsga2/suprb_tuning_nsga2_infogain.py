@@ -52,7 +52,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     X, y = shuffle(X, y, random_state=random_state)
 
     estimator = SupRB(
-        rule_discovery=nsga2.NSGA2(
+        rule_discovery=nsga2.NSGA2InfoGain(
             n_iter=16,     # <- tuned
             mu=16,         # <- tuned
             lmbda=64,      # <- tuned

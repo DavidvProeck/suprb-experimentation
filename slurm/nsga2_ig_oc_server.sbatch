@@ -21,5 +21,5 @@ experiment="runs/comparisons/nsga2/suprb_tuning_nsga2_infogain.py"
 dataset="airfoil_self_noise"
 study_name="SupRB-Airfoil-NSGA2-InformationGain"
 
-srun nix-shell $JOB_DIR/slurm/default_312.nix --command "PYTHONPATH=$JOB_DIR/$PYTHONPATH \
-python $JOB_DIR/$experiment -p $dataset -j $SLURM_JOB_ID"
+srun nix-shell $JOB_DIR/slurm/default_312.nix --command "PYTHONPATH=$JOB_DIR:$PYTHONPATH \
+python $JOB_DIR/$experiment -p $dataset -j $SLURM_JOB_ID -n $study_name"
