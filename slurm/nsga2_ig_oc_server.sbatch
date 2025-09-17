@@ -2,6 +2,7 @@
 #SBATCH --time=96:00:00
 #SBATCH --partition=cpu
 #SBATCH --output=output/output-%j.txt
+#SBATCH --output=output/output-NSGA2-IG-Airfoil-%j.txt
 #SBATCH --cpus-per-task=5
 #SBATCH --mem=20G
 #SBATCH --nodelist=oc-compute03
