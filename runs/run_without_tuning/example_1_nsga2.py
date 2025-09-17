@@ -49,7 +49,10 @@ if __name__ == "__main__":
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=random_state)
 
-    model = SupRB(rule_discovery=NSGA2(), solution_composition=GeneticAlgorithm())
+    model = SupRB(
+        rule_discovery=NSGA2(),
+        solution_composition=GeneticAlgorithm()
+    )
 
     scores = cross_validate(
         model,

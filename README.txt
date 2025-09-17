@@ -36,10 +36,8 @@ export PYTHONPATH=/home/david/Desktop/BA/ba_suprb-experimentation/src/suprb:$PYT
 conda activate venv
 python src/suprb/examples/example_1.py
 
-cd /home/david/Desktop/BA/ba_suprb-experimentation
-export PYTHONPATH=/home/david/Desktop/BA/ba_suprb-experimentation/src/suprb:$PYTHONPATH
-conda activate venv
-python runs/run_without_tuning/example_1_nsga2.py
+export PYTHONPATH=/home/david/Desktop/BA/suprb-experimentation/src/suprb:$PYTHONPATH
+python src/suprb/examples/example_1_nsga2_novelty.py
 
 
 cd /home/vonproda/Desktop/BA/ba_suprb-experimentation
