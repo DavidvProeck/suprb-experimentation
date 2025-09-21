@@ -128,18 +128,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             'rule_discovery__min_experience', 2, 32
         )
 
-        # GA
-        params.solution_composition__selection__k = trial.suggest_int('solution_composition__selection__k', 3, 10)
-
-        params.solution_composition__crossover = trial.suggest_categorical(
-            'solution_composition__crossover', ['NPoint', 'Uniform'])
-        params.solution_composition__crossover = getattr(ga.crossover, params.solution_composition__crossover)()
-
-        if isinstance(params.solution_composition__crossover, ga.crossover.NPoint):
-            params.solution_composition__crossover__n = trial.suggest_int('solution_composition__crossover__n', 1, 10)
-
-        params.solution_composition__mutation__mutation_rate = trial.suggest_float(
-            'solution_composition__mutation_rate', 0, 0.1)
+        # GA is fixed
 
         # Mixing
         params.solution_composition__init__mixing__filter_subpopulation__rule_amount = rule_amount
