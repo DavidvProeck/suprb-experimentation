@@ -92,7 +92,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
         n_jobs_cv=4,
         n_jobs=4,
         n_calls=1000,
-        timeout=60*60*24,  # 24 hours
+        timeout=60*60*24*2,  # 48 hours
         scoring='neg_mean_squared_error',
         verbose=10
     )
@@ -111,7 +111,19 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             'rule_discovery__mutation__sigma', 0.05, sigma_hi
         )
 
-        #GA is FIXED
+        # GA
+        params.solution_composition__selection__k = trial.suggest_int('solution_composition__selection__k', 3, 10)
+
+        params.solution_composition__crossover = trial.suggest_categorical(
+            'solution_composition__crossover', ['NPoint', 'Uniform'])
+        params.solution_composition__crossover = getattr(ga.crossover, params.solution_composition__crossover)()
+
+        if isinstance(params.solution_composition__crossover, ga.crossover.NPoint):
+            params.solution_composition__crossover__n = trial.suggest_int('solution_composition__crossover__n', 1, 10)
+
+        params.solution_composition__mutation__mutation_rate = trial.suggest_float(
+            'solution_composition__mutation_rate', 0, 0.1)
+
         # Mixing
         params.solution_composition__init__mixing__filter_subpopulation__rule_amount = rule_amount
         params.solution_composition__init__mixing__experience_weight = experience_weight
@@ -129,7 +141,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
 
-    experiment_name = f'SupRB NSGA2+InfoGain RD-tuned j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
+    experiment_name = f'NSGA2+InfoGain-tuned j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name, verbose=10)
 
