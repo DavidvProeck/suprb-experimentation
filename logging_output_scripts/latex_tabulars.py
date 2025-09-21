@@ -2,8 +2,9 @@ import json
 import os
 import pandas as pd
 from tabulate import tabulate
+
+from logging_output_scripts import utils
 from logging_output_scripts.utils import check_and_create_dir
-import utils
 
 """
 This script uses the tabulate package (https://pypi.org/project/tabulate/)

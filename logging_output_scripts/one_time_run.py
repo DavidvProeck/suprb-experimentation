@@ -232,8 +232,7 @@ def run_main():
         config["datasets"] = mix_datasets
 
     config["output_directory"] = setting[0]
-    if not os.path.isdir("diss-graphs/graphs"):
-        os.mkdir("diss-graphs/graphs")
+    os.makedirs("diss-graphs/graphs", exist_ok=True)
 
     if not os.path.isdir(config["output_directory"]):
         os.mkdir(config["output_directory"])
@@ -331,15 +330,15 @@ if __name__ == '__main__':
     sagas = ["diss-graphs/graphs/SAGA", saga, "Solution Composition", False, "mlruns_csv/SAGA"]
     sc_rd = ["diss-graphs/graphs/SC", sc_mix_rd, "Solution Composition", False, "mlruns_csv/SC"]
 
-    # mlruns_to_csv(datasets, "MIX", True)
+    mlruns_to_csv(datasets, "MIX", True)
 
-    # setting = rd
+    setting = rd
     # setting = sc
     # setting = sagas
     # setting = mix_calvo
     # setting = mix_calvo_sub
     # setting = xcsf
-    setting = sc_rd
+    #setting = sc_rd
 
     run_main()
     exit()
