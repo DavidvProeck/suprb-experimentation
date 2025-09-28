@@ -16,8 +16,8 @@ datasets = {
     "airfoil_self_noise": "Airfoil Self-Noise",
     "concrete_strength": "Concrete Strength",
     "energy_cool": "Energy Efficiency Cooling",
-    "protein_structure": "Physiochemical Properties of Protein Tertiary Structure",
-    "parkinson_total": "Parkinson's Telemonitoring"
+    #"protein_structure": "Physiochemical Properties of Protein Tertiary Structure",
+    #"parkinson_total": "Parkinson's Telemonitoring"
 }
 
 saga_datasets = {
@@ -65,6 +65,13 @@ rule_discovery = {
     "MCNS False": "MCNS-G",
     "NSLC False": "NSLC-G",
     # "NSLC Tuning": "NSLC-P"
+}
+
+nsga2 = {
+    #"NSGA2+InfoGain-tuned": "NSGA2+IG",
+    "NSGA2+Volume-tuned": "NSGA2+Volume",
+    "NSGA2+Support-tuned": "NSGA2+Support",
+    #"NSGA2+Novelty-tuned": "NSGA2+Novelty",
 }
 
 asoc = {
@@ -319,8 +326,12 @@ def run_main():
         ttest(latex=False, cand1="s:saga2", cand2="s:sas", cand1_name="SAGA2", cand2_name="SAGA4")
         ttest(latex=False, cand1="s:saga3", cand2="s:sas", cand1_name="SAGA3", cand2_name="SAGA4")
 
+    if setting[0] == "diss-graphs/graphs/NSGA2":
+        pass
+
 
 if __name__ == '__main__':
+    test = ["diss-graphs/graphs/NSGA2", nsga2, "Rule Discovery", False, "mlruns_csv/MIX"] # testing
     rd = ["diss-graphs/graphs/RD", rule_discovery, "Rule Discovery", False, "mlruns_csv/RD"]
     sc = ["diss-graphs/graphs/SC_only_GA", solution_composition, "Solution Composition", False, "mlruns_csv/SC_only_GA"]
     xcsf = ["diss-graphs/graphs/RBML", asoc, "Estimator", False, "mlruns_csv/RBML"]
@@ -332,7 +343,7 @@ if __name__ == '__main__':
 
     mlruns_to_csv(datasets, "MIX", True)
 
-    setting = rd
+    setting = test
     # setting = sc
     # setting = sagas
     # setting = mix_calvo
