@@ -73,7 +73,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 k_neighbor=15,
                 #novelty_search_type=MinimalCriteria(min_examples_matched=15)  # <- tuned #TODO: Leads to warnings in crowding distance calculation.
             ),
-            novelty_mode="P",
+            novelty_mode="G",
             profile=False,
             min_experience=2, #Rules that match only one sample are considered trivial, so min_experience >= 2
             max_restarts=4,
@@ -147,7 +147,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
 
-    experiment_name = f'NSGA2+Novelty-tuned-P j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
+    experiment_name = f'NSGA2+Novelty-tuned-G j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name, verbose=10)
 
