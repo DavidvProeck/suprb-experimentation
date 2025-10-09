@@ -12,8 +12,8 @@ from logging_output_scripts.utils import filter_runs
 from logging_output_scripts import latex_tabulars
 
 datasets = {
-    "combined_cycle_power_plant": "Combined Cycle Power Plant",
     "airfoil_self_noise": "Airfoil Self-Noise",
+    "combined_cycle_power_plant": "Combined Cycle Power Plant",
     "concrete_strength": "Concrete Strength",
     "energy_cool": "Energy Efficiency Cooling",
     #"protein_structure": "Physiochemical Properties of Protein Tertiary Structure",
@@ -68,10 +68,10 @@ rule_discovery = {
 }
 
 nsga2 = {
-    #"NSGA2+InfoGain-tuned": "NSGA2+IG",
-    "NSGA2+Volume-tuned": "NSGA2+Volume",
-    "NSGA2+Support-tuned": "NSGA2+Support",
-    #"NSGA2+Novelty-tuned": "NSGA2+Novelty",
+    "NSGA2+InfoGain-tuned": "IG",
+    "NSGA2+Volume-tuned": "Vol",
+    "NSGA2+Support-tuned": "Sup",
+    "NSGA2+Novelty-tuned": "Nov",
 }
 
 asoc = {

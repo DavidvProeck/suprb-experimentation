@@ -15,13 +15,15 @@ from suprb.solution.fitness import PseudoBIC, ComplexityWu
 from suprb.solution.mixing_model import ErrorExperienceHeuristic
 from suprb.optimizer.rule.origin import RuleOriginGeneration
 from suprb.optimizer.rule.mutation import HalfnormIncrease
-from suprb.optimizer.rule.nsga2 import PymooNSGA2, NSGA2
 from suprb.utils import estimate_bounds
 
 import sys
 import os
 from pprint import pprint
-sys.path.insert(0, os.path.abspath("/home/david/Desktop/BA/ba_suprb-experimentation"))
+
+from suprb.optimizer.rule.nsga2 import NSGA2InfoGain
+
+sys.path.insert(0, os.path.abspath("/home/david/Desktop/BA/suprb-experimentation"))
 
 pprint(sys.path)
 
