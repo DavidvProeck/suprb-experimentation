@@ -41,8 +41,9 @@ def load_dataset(name: str, **kwargs) -> tuple[np.ndarray, np.ndarray]:
 @click.option('-f', '--filter_subpopulation', type=click.STRING, default='FilterSubpopulation')
 @click.option('-e', '--experience_calculation', type=click.STRING, default='ExperienceCalculation')
 @click.option('-w', '--experience_weight', type=click.INT, default=1)
+@click.option('-n', '--study_name', type=click.STRING, default=None)
 def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
-        experience_calculation: str, experience_weight: int):
+        experience_calculation: str, experience_weight: int, study_name: str):
     print(f"Problem is {problem}, with job id {job_id}")
 
     X, y = load_dataset(name=problem, return_X_y=True)
@@ -122,7 +123,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             params.solution_composition__init__mixing__experience_calculation__upper_bound = trial.suggest_int(
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
-    experiment_name = f'Warmup-SupRB ES Tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}'
+    experiment_name = f'Warmup-SupRB ES Tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name,  verbose=10)
 
