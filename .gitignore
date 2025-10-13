@@ -1,11 +1,3 @@
-# Etc
-
-results
-Paretofront.png
-mlruns
-mlruns_csv
-outputs
-
 # MlFlow
 **/mlruns/**
 mlruns/**
