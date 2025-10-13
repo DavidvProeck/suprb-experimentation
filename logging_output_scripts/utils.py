@@ -1,25 +1,9 @@
 import os
 import json
-import sys
-
 import mlflow
 import pandas as pd
 
 results_dict = {}
-
-def _norm(s: str) -> str:
-    return str(s).lstrip('/').strip()
-
-
-def _warn_dropped(reason: str, rows: pd.DataFrame, prefix: str=""):
-    if rows is None or rows.empty:
-        return
-    head = rows["tags.mlflow.runName"].head(5).tolist()
-    msg = (
-        f"{prefix}Dropped {len(rows)} run(s) ({reason}). )"
-        f"Examples: {head}{' ...' if len(rows) > 5 else ''}"
-    )
-    print(msg, file=sys.stderr)
 
 
 def filter_runs(all_runs_df=None):
@@ -30,12 +14,10 @@ def filter_runs(all_runs_df=None):
         all_runs_df = mlflow.search_runs(search_all_experiments=True)
 
     for heuristic in config["heuristics"].keys():
-        h_pat = _norm(heuristic)
         for dataset in config["datasets"].keys():
-            d_pat = _norm(dataset)
             filtered_df = all_runs_df[
-                all_runs_df["tags.mlflow.runName"].str.contains(h_pat, case=False, na=False, regex=False) &
-                all_runs_df["tags.mlflow.runName"].str.contains(d_pat, case=False, na=False, regex=False) &
+                all_runs_df["tags.mlflow.runName"].str.contains(heuristic, case=False, na=False) &
+                all_runs_df["tags.mlflow.runName"].str.contains(dataset, case=False, na=False) &
                 (all_runs_df["tags.fold"] == 'True')
             ]
 
@@ -54,34 +36,15 @@ def get_normalized_df(heuristic, filepath):
     for dataset in config["datasets"]:
         df = pd.concat([df, pd.read_csv(f"{filepath}/{dataset}_all.csv")])
 
-    return df[df["tags.mlflow.runName"].str.contains(_norm(heuristic), case=False, na=False, regex=False)]
+    return df[df["tags.mlflow.runName"].str.contains(heuristic, case=False, na=False)]
 
 
 def get_csv_df(heuristic, dataset):
     with open('logging_output_scripts/config.json') as f:
         config = json.load(f)
 
-    mse = "metrics.test_neg_mean_squared_error"
-    complexity = "metrics.elitist_complexity"
-
     df = pd.read_csv(f"{config['data_directory']}/{dataset}_all.csv")
-
-    # literal match so '+' and '-' are not regex
-    mask = df["tags.mlflow.runName"].str.contains(_norm(heuristic), case=False, na=False, regex=False)
-    df = df[mask]
-
-    if df.empty:
-        return df
-
-    for col in (mse, complexity):
-        if col in df:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
-
-    bad = df[df[[mse, complexity]].isna().any(axis=1)]
-    _warn_dropped(f"missing required metric(s)", bad, prefix=f"[{_norm(heuristic)} × {dataset}] ")
-
-    df = df.dropna(subset=[mse, complexity])
-    return df
+    return df[df["tags.mlflow.runName"].str.contains(heuristic, case=False, na=False)]
 
 
 def get_df(heuristic, dataset):

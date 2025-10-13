@@ -173,9 +173,7 @@ def calvo(latex=False, all_variants=False, check_mcmc=False, small_set=False, yl
         i = -1
         for mode, f in variants.items():
             i += 1
-            #d = f(df)[config["heuristics"]]
-            heur_cols = list(config["heuristics"].keys())
-            d = f(df).loc[:, heur_cols]
+            d = f(df)[config["heuristics"].keys()]
 
             print(d)
 

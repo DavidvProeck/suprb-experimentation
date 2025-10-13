@@ -12,12 +12,12 @@ from logging_output_scripts.utils import filter_runs
 from logging_output_scripts import latex_tabulars
 
 datasets = {
-    "airfoil_self_noise": "Airfoil Self-Noise",
     "combined_cycle_power_plant": "Combined Cycle Power Plant",
+    "airfoil_self_noise": "Airfoil Self-Noise",
     "concrete_strength": "Concrete Strength",
     "energy_cool": "Energy Efficiency Cooling",
-    #"protein_structure": "Physiochemical Properties of Protein Tertiary Structure",
-    #"parkinson_total": "Parkinson's Telemonitoring"
+    "protein_structure": "Physiochemical Properties of Protein Tertiary Structure",
+    "parkinson_total": "Parkinson's Telemonitoring"
 }
 
 saga_datasets = {
@@ -65,13 +65,6 @@ rule_discovery = {
     "MCNS False": "MCNS-G",
     "NSLC False": "NSLC-G",
     # "NSLC Tuning": "NSLC-P"
-}
-
-nsga2 = {
-    "NSGA2+InfoGain-tuned": "IG",
-    "NSGA2+Volume-tuned": "Vol",
-    "NSGA2+Support-tuned": "Sup",
-    "NSGA2+Novelty-tuned": "Nov",
 }
 
 asoc = {
@@ -239,7 +232,8 @@ def run_main():
         config["datasets"] = mix_datasets
 
     config["output_directory"] = setting[0]
-    os.makedirs("diss-graphs/graphs", exist_ok=True)
+    if not os.path.isdir("diss-graphs/graphs"):
+        os.mkdir("diss-graphs/graphs")
 
     if not os.path.isdir(config["output_directory"]):
         os.mkdir(config["output_directory"])
@@ -326,12 +320,8 @@ def run_main():
         ttest(latex=False, cand1="s:saga2", cand2="s:sas", cand1_name="SAGA2", cand2_name="SAGA4")
         ttest(latex=False, cand1="s:saga3", cand2="s:sas", cand1_name="SAGA3", cand2_name="SAGA4")
 
-    if setting[0] == "diss-graphs/graphs/NSGA2":
-        pass
-
 
 if __name__ == '__main__':
-    test = ["diss-graphs/graphs/NSGA2", nsga2, "Rule Discovery", False, "mlruns_csv/MIX"] # testing
     rd = ["diss-graphs/graphs/RD", rule_discovery, "Rule Discovery", False, "mlruns_csv/RD"]
     sc = ["diss-graphs/graphs/SC_only_GA", solution_composition, "Solution Composition", False, "mlruns_csv/SC_only_GA"]
     xcsf = ["diss-graphs/graphs/RBML", asoc, "Estimator", False, "mlruns_csv/RBML"]
@@ -341,15 +331,15 @@ if __name__ == '__main__':
     sagas = ["diss-graphs/graphs/SAGA", saga, "Solution Composition", False, "mlruns_csv/SAGA"]
     sc_rd = ["diss-graphs/graphs/SC", sc_mix_rd, "Solution Composition", False, "mlruns_csv/SC"]
 
-    mlruns_to_csv(datasets, "MIX", True)
+    # mlruns_to_csv(datasets, "MIX", True)
 
-    setting = test
+    # setting = rd
     # setting = sc
     # setting = sagas
     # setting = mix_calvo
     # setting = mix_calvo_sub
     # setting = xcsf
-    #setting = sc_rd
+    setting = sc_rd
 
     run_main()
     exit()

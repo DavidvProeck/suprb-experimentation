@@ -87,8 +87,7 @@ def create_plots():
             plt.yticks(y_tick_positions, [f'{x:.3g}' for x in y_tick_positions])
 
         ################### MSE ###########################
-        plots = {
-            "violin": sns.violinplot,
+        plots = {  # "violin": sns.violinplot,
             "swarm": sns.swarmplot,
             #  "box": sns.boxplot
         }
@@ -104,12 +103,7 @@ def create_plots():
             for y_label, y_axis in y_axis_label.items():
                 fig, ax = plt.subplots(dpi=400)
                 plt.subplots_adjust(left=0.2, right=0.95, top=0.92, bottom=0.22)
-                if name == "swarm":
-                    ax = function(x='Used_Representation', y=y_axis, data=res_var, size=3)
-                else:
-                    ax = function(x='Used_Representation', y=y_axis, data=res_var)
-
-                # ax = function(x='Used_Representation', y=y_axis, data=res_var, size=3)
+                ax = function(x='Used_Representation', y=y_axis, data=res_var, size=3)
                 ax_config(ax, y_label)
 
                 fig.savefig(f"{final_output_dir}/{name}_{datasets_map[problem]}_{y_label}.png")
