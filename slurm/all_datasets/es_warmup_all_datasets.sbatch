@@ -7,7 +7,7 @@
 #SBATCH --nodelist=oc-compute03
 #SBATCH --cpus-per-task=5
 #SBATCH --mem=20G
-#SBATCH --job-name=ES_Baseline         # shows up in squeue/sacct and filenames
+#SBATCH --job-name=ES_Warmup        # shows up in squeue/sacct and filenames
 #SBATCH --array=0-3                              # one task per dataset (see list below)
 # Structured logs: output/<jobname>_<arrayid>_<taskid>.{txt,err}
 #SBATCH --output=output/%x_%A_%a.txt
