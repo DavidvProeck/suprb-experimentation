@@ -98,7 +98,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
         n_jobs=4,
         n_calls=1000,
         timeout=60*60*24*2,  # 48 hours
-        scoring='neg_mean_squared_error',
+        scoring='neg_mean_squared_error', #TODO mention in discussion
         verbose=10
     )
 

@@ -46,7 +46,7 @@ def create_plots():
 
         for heuristic, renamed_heuristic in config['heuristics'].items():
             if config["normalize_datasets"]:
-                fold_df = get_normalized_df(heuristic, "mlruns_csv/MIX")
+                fold_df = get_normalized_df(heuristic, "../mlruns_csv/MIX")
             else:
                 if config["data_directory"] == "mlruns":
                     fold_df = get_df(heuristic, problem)
