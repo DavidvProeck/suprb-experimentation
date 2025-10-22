@@ -115,8 +115,8 @@ def create_plots():
                 fig.savefig(f"{final_output_dir}/{name}_{datasets_map[problem]}_{y_label}.png")
                 plt.close(fig)
 
-        if config["data_directory"] == "mlruns_csv/MIX":
-            return
+        # if config["data_directory"] == "mlruns_csv/MIX":
+        #     return
 
 
 if __name__ == '__main__':

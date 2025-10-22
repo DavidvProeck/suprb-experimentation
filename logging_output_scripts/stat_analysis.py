@@ -262,7 +262,24 @@ def ttest(latex, cand1, cand2, cand1_name, cand2_name):
             # y2 = df[metric].loc[cand1, task].to_numpy()
             # y1 = df[metric].loc[cand2, task].to_numpy()
 
-            model = cmpbayes.BayesCorrTTest(y1, y2, fraction_test=0.25).fit(num_samples=chosen_sample_num)
+            #model = cmpbayes.BayesCorrTTest(y1, y2, fraction_test=0.25).fit(num_samples=chosen_sample_num)
+                # === Safety checks ===
+                if len(y1) == 0 or len(y2) == 0:
+                    print(f"[Warning] Skipping t-test for '{cand1}' vs '{cand2}' on '{task}' "
+                          f"— one candidate has no data.")
+                    continue
+                if len(y1) != len(y2):
+                    print(f"[Warning] Skipping t-test for '{cand1}' vs '{cand2}' on '{task}' "
+                          f"— unequal number of runs ({len(y1)} vs {len(y2)}).")
+                    continue
+                try:
+                    model = cmpbayes.BayesCorrTTest(y1, y2, fraction_test=0.25).fit(num_samples=chosen_sample_num)
+                except Exception as e:
+                    print(f"[Warning] Error running t-test for '{cand1}' vs '{cand2}' on '{task}': {e}")
+                    continue
+            else:
+                print(f"[Warning] Task '{task}' not found for candidate '{cand1}' — skipping.")
+                continue
 
             # Compute 100(1 - alpha)% high density interval.
             alpha = 0.005
@@ -375,14 +392,19 @@ def ttest(latex, cand1, cand2, cand1_name, cand2_name):
     hdis_ = hdis
     hdis_melt = pd.json_normalize(hdis_, sep=">>").melt()
     hdis = hdis_melt["variable"].str.split(">>", expand=True)
-    hdis.columns = ["n", "metric", "task", "kind"]
-    del hdis["n"]
+    if hdis.shape[1] == 3:
+        hdis.columns = ["metric", "task", "kind"]
+    elif hdis.shape[1] == 4:
+        hdis.columns = ["n", "metric", "task", "kind"]
+        del hdis["n"]
+    else:
+        raise ValueError(f"[Error] Unexpected number of columns in HDI split: {hdis.shape[1]}")
     hdis["bound"] = hdis_melt["value"]
     hdis = hdis.set_index(list(hdis.columns[:-1]))
     hdis = hdis.unstack("kind")
     hdis["bound", "lower"] = hdis["bound", "lower"].apply(lambda x: f"[{round_to_n_sig_figs(x, n=2)},")
     hdis["bound", "upper"] = hdis["bound", "upper"].apply(lambda x: f"{round_to_n_sig_figs(x, n=2)}]")
-    hdis = hdis.rename(columns={"bound": "99\% HDI"})
+    hdis = hdis.rename(columns={"bound": "99\\% HDI"})
 
     smart_print(hdis, latex=latex)
 
