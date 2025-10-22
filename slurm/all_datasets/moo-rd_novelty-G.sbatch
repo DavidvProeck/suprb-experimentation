@@ -6,7 +6,7 @@
 #SBATCH --partition=cpu
 #SBATCH --nodelist=oc-compute03
 #SBATCH --cpus-per-task=5
-#SBATCH --mem=120G
+#SBATCH --mem=40G
 #SBATCH --job-name=MOORDNoveltyG            # shows up in squeue/sacct and filenames
 #SBATCH --array=0-3                              # one task per dataset (see list below)
 # Structured logs: output/<jobname>_<arrayid>_<taskid>.{txt,err}
