@@ -226,14 +226,14 @@ def run_ttests(setting):
     elif name.endswith("/NSGA2"):
         comparisons = [
             # --- Baseline comparisons ---
-            ("NSGA2+InfoGain-tuned", "NSGA2+Baseline-tuned", "IG", "ES"),
-            ("NSGA2+Volume-tuned", "NSGA2+Baseline-tuned", "Vol", "ES"),
-            ("NSGA2+Support-tuned", "NSGA2+Baseline-tuned", "Sup", "ES"),
-            ("NSGA2+Novelty-tuned", "NSGA2+Baseline-tuned", "Nov", "ES"),
+            # ("NSGA2+InfoGain-tuned", "NSGA2+Baseline-tuned", "IG", "ES"),
+            # ("NSGA2+Volume-tuned", "NSGA2+Baseline-tuned", "Vol", "ES"),
+            # ("NSGA2+Support-tuned", "NSGA2+Baseline-tuned", "Sup", "ES"),
+            # ("NSGA2+Novelty-tuned", "NSGA2+Baseline-tuned", "Nov", "ES"),
             # --- Cross-objective comparisons ---
-            ("NSGA2+InfoGain-tuned", "NSGA2+Volume-tuned", "IG", "Vol"),
-            ("NSGA2+InfoGain-tuned", "NSGA2+Support-tuned", "IG", "Sup"),
-            ("NSGA2+InfoGain-tuned", "NSGA2+Novelty-tuned", "IG", "Nov"),
+            # ("NSGA2+InfoGain-tuned", "NSGA2+Volume-tuned", "IG", "Vol"),
+            # ("NSGA2+InfoGain-tuned", "NSGA2+Support-tuned", "IG", "Sup"),
+            # ("NSGA2+InfoGain-tuned", "NSGA2+Novelty-tuned", "IG", "Nov"),
             ("NSGA2+Volume-tuned", "NSGA2+Support-tuned", "Vol", "Sup"),
             ("NSGA2+Volume-tuned", "NSGA2+Novelty-tuned", "Vol", "Nov"),
             ("NSGA2+Support-tuned", "NSGA2+Novelty-tuned", "Sup", "Nov"),

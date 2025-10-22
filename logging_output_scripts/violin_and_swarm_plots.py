@@ -104,10 +104,27 @@ def create_plots():
             for y_label, y_axis in y_axis_label.items():
                 fig, ax = plt.subplots(dpi=400)
                 plt.subplots_adjust(left=0.2, right=0.95, top=0.92, bottom=0.22)
+
+                palette = sns.color_palette("tab10", n_colors=res_var["Used_Representation"].nunique())
                 if name == "swarm":
-                    ax = function(x='Used_Representation', y=y_axis, data=res_var, size=3)
+                    ax = function(
+                        x='Used_Representation',
+                        y=y_axis,
+                        hue='Used_Representation',
+                        data=res_var,
+                        size=3,
+                        palette=palette,
+                        legend=False
+                    )
                 else:
-                    ax = function(x='Used_Representation', y=y_axis, data=res_var)
+                    ax = function(
+                        x='Used_Representation',
+                        y=y_axis,
+                        hue='Used_Representation',
+                        data=res_var,
+                        palette=palette,
+                        legend=False
+                    )
 
                 # ax = function(x='Used_Representation', y=y_axis, data=res_var, size=3)
                 ax_config(ax, y_label)

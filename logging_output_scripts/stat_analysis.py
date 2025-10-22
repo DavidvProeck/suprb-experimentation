@@ -201,6 +201,13 @@ def calvo(latex=False, all_variants=False, check_mcmc=False, small_set=False, yl
                 az.plot_trace(model.infdata_)
                 az.plot_rank(model.infdata_)
 
+            # Build consistent color palette
+            unique_labels = list(config["heuristics"].values())
+            palette = dict(zip(
+                unique_labels,
+                sns.color_palette("tab10", n_colors=len(unique_labels))
+            ))
+
             # Join all chains, name columns.
             sample = np.concatenate(model.infdata_.posterior.weights)
             sample = pd.DataFrame(sample, columns=model.infdata_.posterior.weights.algorithm_labels)
@@ -208,7 +215,14 @@ def calvo(latex=False, all_variants=False, check_mcmc=False, small_set=False, yl
             xlabel = f"Probability"  # f"Probability of having the lowest {metrics[metric]}"
             sample = sample.unstack().reset_index(0).rename(columns={"level_0": ylabel, 0: xlabel})
 
-            sns.boxplot(data=sample, y=ylabel, x=xlabel, ax=ax[i], fliersize=0.3)
+            sns.boxplot(
+                data=sample,
+                y=ylabel,
+                x=xlabel,
+                ax=ax[i],
+                fliersize=0.3,
+                palette=palette,
+            )
             ax[i].set_title(metrics[metric], style="italic")
             ax[i].set_xlabel(xlabel, weight="bold")
             ax[i].set_ylabel(ylabel, weight="bold")
