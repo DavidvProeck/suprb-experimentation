@@ -72,7 +72,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             ],
             fitness_objs_labels=[
                 "Error",
-                "Volume"
+                "-Volume"
             ],
             profile=False,
         ),
