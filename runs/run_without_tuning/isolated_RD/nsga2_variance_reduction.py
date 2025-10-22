@@ -16,9 +16,9 @@ from metrics import summarize_rule_set, save_metrics_to_csv
 def run():
     t0 = time()
     random_state = 42
-    X, y = load_eggholder(n_samples=250, noise=0.2, random_state=random_state)
+    X, y = load_eggholder(n_samples=250, noise=0.5, random_state=random_state)
 
-    mu = 20
+    mu = 16
     rule_discovery = NSGA2VarianceReduction(
         n_iter=10,
         mu=mu,
@@ -34,12 +34,12 @@ def run():
 
         n_jobs=4,
         fitness_objs=[
-            #lambda r: r.error_,
-            lambda r: r.volume_,
+            lambda r: r.error_,
+            #lambda r: r.volume_,
         ],
         fitness_objs_labels=[
-           # "Error",
-            "Volume",
+            "Error",
+            #"Volume",
         ],
     )
     init_rule_discovery_env(rule_discovery)

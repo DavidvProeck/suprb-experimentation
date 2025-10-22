@@ -20,6 +20,7 @@ def run():
         n_iter=10,
         operator='&',
         delay=5,
+        lmbda=64,
         origin_generation=origin.SquaredError(),
         mutation=mutation.HalfnormIncrease(sigma=1.22,
                                            matching_type=rule.matching.OrderedBound([-1, 1])),
@@ -47,7 +48,7 @@ def run():
         rule_discovery,
         filename,
         show_params=False,
-        subtitle=" - NSGA2+Volume"
+        subtitle=" - ES Baseline"
     )
 
     summary = summarize_rule_set(generated_rules, X, y)

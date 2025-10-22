@@ -13,13 +13,13 @@ from metrics import summarize_rule_set, save_metrics_to_csv
 def run():
     t0 = time()
     random_state = 42
-    X, y = load_eggholder(n_samples=250, noise=0.2, random_state=random_state)
+    X, y = load_eggholder(n_samples=250, noise=0.5, random_state=random_state)
 
-    mu = 20
+    mu = 16
     rule_discovery = NSGA2(
-        n_iter=64,
+        n_iter=10,
         mu=mu,
-        lmbda=128,
+        lmbda=64,
         origin_generation=origin.SquaredError(),
         mutation=mutation.Normal(sigma=1.22,
                                            matching_type=rule.matching.OrderedBound([-1, 1])
@@ -36,7 +36,7 @@ def run():
         ],
         fitness_objs_labels=[
             "Error",
-            "Volume",
+            "-Volume",
         ]
     )
     init_rule_discovery_env(rule_discovery)

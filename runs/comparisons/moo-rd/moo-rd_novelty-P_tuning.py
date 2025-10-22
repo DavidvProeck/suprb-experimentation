@@ -73,7 +73,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 k_neighbor=15,
                 #novelty_search_type=MinimalCriteria(min_examples_matched=15)  # <- tuned #TODO: Leads to warnings in crowding distance calculation.
             ),
-            novelty_mode="G",
+            novelty_mode="P",
             profile=False,
             min_experience=2, #Rules that match only one sample are considered trivial, so min_experience >= 2
             max_restarts=4,
@@ -106,8 +106,8 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     def suprb_NS_GA_space(trial: Trial, params: Bunch):
         params.rule_discovery__mu = trial.suggest_int('rule_discovery__mu', 8, 64, step=4)
 
-        lam_min = max(32, params.rule_discovery__mu)
-        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', lam_min, 256, step=16)
+        lam_min = params.rule_discovery__mu
+        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', lam_min, 128, step=4)
 
         params.rule_discovery__n_iter = trial.suggest_int('rule_discovery__n_iter', 1, 64, step=1)
 
@@ -147,7 +147,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
 
-    experiment_name = f'NSGA2+Novelty-tuned-G j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
+    experiment_name = f'NSGA2+Novelty-tuned-P j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name, verbose=10)
 

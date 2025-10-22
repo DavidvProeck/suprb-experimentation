@@ -36,64 +36,63 @@ def init_rule_discovery_env(rule_discovery):
     rule_discovery.elitist_ = Solution([0, 0, 0], [0, 0, 0], ErrorExperienceHeuristic(), ComplexityWu())
 
 
-def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=None, show_params = True, subtitle=None):
+def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=None, show_params=True, subtitle=None):
     # Create figure with 2 rows:  top for the plot (4 units high), bottom for text (1 unit high)
     plt.rcParams["font.family"] = "serif"
     plt.rcParams["font.serif"] = ["Times New Roman", "Times", "DejaVu Serif"]
     plt.rcParams["mathtext.fontset"] = "cm"  # for consistent math font
 
-    fig = plt.figure(figsize=(12, 6))
-    gs  = gridspec.GridSpec(2, 1, height_ratios=[4, 1], hspace=0.2)
+    # Ensure text in PDF stays as text (not paths)
+    plt.rcParams["pdf.fonttype"] = 42
+    plt.rcParams["ps.fonttype"] = 42
+    plt.rcParams["svg.fonttype"] = "none"
 
-    # top axis
+    fig = plt.figure(figsize=(12, 6))
+    gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1], hspace=0.2)
+
+    # Top axis
     ax = fig.add_subplot(gs[0])
     ax.scatter(X, y, s=10, color="lightgray", label="Eggholder samples")
     colors = plt.cm.tab10(np.linspace(0, 1, len(rules)))
     for i, rule in enumerate(rules):
         if not rule.is_fitted_:
             continue
-        mask      = rule.match(X)
-        Xm        = X[mask]
-        idx       = np.argsort(Xm[:, 0])
+        mask = rule.match(X)
+        Xm = X[mask]
+        idx = np.argsort(Xm[:, 0])
         Xm_sorted = Xm[idx]
-        y_pred    = rule.predict(Xm_sorted)
-        vol, err  = rule.volume_, rule.error_
+        y_pred = rule.predict(Xm_sorted)
+        vol, err = rule.volume_, rule.error_
         ax.plot(Xm_sorted, y_pred,
                 label=f"Rule {i+1} (V:{vol:.3f}, E:{err:.3f})",
                 color=colors[i])
+    title = "Rule Predictions on Eggholder Samples"
     if subtitle is not None:
-        ax.set( title=f"Rule Predictions on Eggholder Samples" + subtitle,
-            xlabel="X",
-            ylabel="Predicted y" )
-    else:
-        ax.set( title="Rule Predictions on Eggholder Samples",
-                xlabel="X",
-                ylabel="Predicted y" )
+        title += subtitle
+    ax.set(title=title, xlabel="X", ylabel="Predicted y")
     ax.legend(loc="upper left", fontsize="small")
     ax.grid(True)
 
-    # bot axis
+    # Bottom axis for params
     if show_params:
         ax_txt = fig.add_subplot(gs[1])
         ax_txt.axis("off")  # hide ticks
-
         if estimator is not None:
             params = estimator.get_params()
             lines = [f"{k} = {v}" for k, v in sorted(params.items())]
             lines.append(f"runtime = {runtime}")
-            block = "\n".join(lines)
-            # place text at top-left of this small axes
-            ax_txt.text(
-                0, 1, block,
-                va="top", ha="left",
-                fontsize="x-small", family="monospace"
-            )
+            ax_txt.text(0, 1, "\n".join(lines), va="top", ha="left",
+                        fontsize="x-small", family="monospace")
 
+    # Save as high-quality vector PDF
     if filename:
-        fig.savefig(filename, dpi=150, bbox_inches="tight")
+        pdf_filename = filename.rsplit(".", 1)[0] + ".pdf"
+        fig.savefig(pdf_filename, format="pdf", bbox_inches="tight")
         plt.close(fig)
+        print(f"Vector PDF saved to '{pdf_filename}'")
     else:
         plt.show()
+
 
 
 def build_filename(estimator):

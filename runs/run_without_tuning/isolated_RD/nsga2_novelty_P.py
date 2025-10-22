@@ -14,13 +14,13 @@ from metrics import summarize_rule_set, save_metrics_to_csv
 def run():
     t0 = time()
     random_state = 42
-    X, y = load_eggholder(n_samples=250, noise=0.2, random_state=random_state)
+    X, y = load_eggholder(n_samples=250, noise=0.5, random_state=random_state)
 
-    mu = 20
+    mu = 16
     rule_discovery = NSGA2Novelty_G_P(
         n_iter=10,
         mu=mu,
-        lmbda=64,
+        lmbda=32,
         origin_generation=origin.SquaredError(),
         mutation=mutation.Normal(sigma=1.22,
                                            matching_type=rule.matching.OrderedBound([-1, 1])),

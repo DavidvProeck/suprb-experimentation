@@ -45,7 +45,7 @@ python runs/run_without_tuning/eggholder/eggholder_nsga2_novelty_G_P.py
 
 cd /home/vonproda/Desktop/BA/suprb-experimentation
 export PYTHONPATH=/home/vonproda/Desktop/BA/suprb-experimentation/src/suprb:$PYTHONPATH
-python runs/run_without_tuning/isolated_RD/nsga2_nov_P.py
+python runs/run_without_tuning/isolated_RD/nsga2_novelty_P.py
 
 cd /home/vonproda/Desktop/BA/suprb-experimentation
 export PYTHONPATH=/home/vonproda/Desktop/BA/suprb-experimentation/src/suprb:$PYTHONPATH

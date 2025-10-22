@@ -101,8 +101,8 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     def suprb_NS_GA_space(trial: Trial, params: Bunch):
         params.rule_discovery__mu = trial.suggest_int('rule_discovery__mu', 8, 64, step=4)
 
-        lam_min = max(32, params.rule_discovery__mu)
-        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', lam_min, 256, step=16)
+        lam_min = params.rule_discovery__mu
+        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', lam_min, 128, step=4)
 
         params.rule_discovery__n_iter = trial.suggest_int('rule_discovery__n_iter', 1, 64, step=1)
 
