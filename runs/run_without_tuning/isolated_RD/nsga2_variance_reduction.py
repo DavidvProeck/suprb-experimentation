@@ -53,16 +53,16 @@ def run():
     print(f"\nTotal runtime: {runtime}")
 
     filename = build_filename(rule_discovery)
-    visualize_rule_predictions(
-        X,
-        y,
-        generated_rules,
-        runtime,
-        rule_discovery,
-        filename,
-        show_params=False,
-        subtitle=" - NSGA2+Variance Reduction"
-    )
+    # visualize_rule_predictions(
+    #     X,
+    #     y,
+    #     generated_rules,
+    #     runtime,
+    #     rule_discovery,
+    #     filename,
+    #     show_params=False,
+    #     subtitle=" - NSGA2+Variance Reduction"
+    # )
 
     summary = summarize_rule_set(generated_rules, X, y)
     print("\nAverage error(MSE):", summary["average_error"])
@@ -77,4 +77,5 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    for i in range(100):
+        run()
