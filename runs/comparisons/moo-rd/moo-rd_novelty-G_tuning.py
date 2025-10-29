@@ -97,7 +97,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
         n_jobs_cv=4,
         n_jobs=4,
         n_calls=1000,
-        timeout=60*60*24*2,  # 48 hours
+        timeout=60*60*24*3,  # 72 hours
         scoring='neg_mean_squared_error', #TODO mention in discussion
         verbose=10
     )
@@ -106,10 +106,10 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     def suprb_NS_GA_space(trial: Trial, params: Bunch):
         params.rule_discovery__mu = trial.suggest_int('rule_discovery__mu', 8, 64, step=4)
 
-        lam_min = params.rule_discovery__mu
-        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', lam_min, 128, step=4)
+        lam_min = max(32, params.rule_discovery__mu)
+        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', lam_min, 256, step=16)
 
-        params.rule_discovery__n_iter = trial.suggest_int('rule_discovery__n_iter', 1, 64, step=1)
+        params.rule_discovery__n_iter = trial.suggest_int('rule_discovery__n_iter', 8, 128, step=4)
 
         sigma_hi = max(1.5, float(np.sqrt(X.shape[1])) * 2.0)
         params.rule_discovery__mutation__sigma = trial.suggest_float(
@@ -126,6 +126,10 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
 
         params.rule_discovery__min_experience = trial.suggest_int(
             'rule_discovery__min_experience', 2, 32
+        )
+
+        params.rule_discovery_max_restarts = trial.suggest_int(
+            'rule_discovery__max_restarts', 4, 32
         )
 
         # GA is fixed
