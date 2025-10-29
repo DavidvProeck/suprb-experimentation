@@ -130,7 +130,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
 
-    experiment_name = f'NSGA2+InfoGain-tuned j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
+    experiment_name = f'MOO-RD-InfoGain-tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name, verbose=10)
 

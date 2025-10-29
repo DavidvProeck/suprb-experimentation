@@ -68,12 +68,16 @@ rule_discovery = {
 }
 
 nsga2 = {
-    "MOO-RD-InfoGain-tuning": "IG",
-    "MOO-RD-Volume-tuned": "Vol",
-    "MOO-RD-Support-tuned": "Sup",
-    "MOO-RD-Novelty-P-tuned": "N-P",
-    "MOO-RD-Novelty-G-tuned": "N-G",
-    "ES-Baseline-tuning": "ES"
+    # "MOO-RD-InfoGain-tuning": "IG",
+    # "MOO-RD-Volume-tuned": "Vol",
+    # "MOO-RD-Support-tuned": "Sup",
+    # "MOO-RD-Novelty-P-tuned": "N-P",
+    # "MOO-RD-Novelty-G-tuned": "N-G",
+    # "ES-Baseline-tuning": "ES"
+    "NSGA2+Volume-tuned": "V",
+    "NSGA2+Support-tuned": "S",
+    "NSGA2+Novelty-tuned-P": "N-P",
+    "NSGA2+Novelty-tuned-G": "N-G",
 }
 
 asoc = {

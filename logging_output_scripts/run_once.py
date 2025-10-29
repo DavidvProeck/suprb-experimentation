@@ -65,15 +65,18 @@ RULE_DISCOVERY = {
 
 MOORD = {
     # "MOO-RD-InfoGain-tuning": "IG",
-    # "MOO-RD-Volume-tuned": "Vol",
-    # "MOO-RD-Support-tuned": "Sup",
+    # "MOO-RD-Volume-tuned": "V",
+    # "MOO-RD-Support-tuned": "S",
     # "MOO-RD-Novelty-P-tuned": "N-P",
     # "MOO-RD-Novelty-G-tuned": "N-G",
-    # "ES-Baseline-tuning": "ES",
-    "NSGA2+InfoGain-tuned": "IG",
-    "NSGA2+Volume-tuned": "Vol",
-    "NSGA2+Support-tuned": "Sup",
-    "NSGA2+Novelty-tuned": "Nov",
+    # "MOO-RD-VarianceReduction-tuning": "IG",
+    # "ES-Baseline-tuning": "BL",
+    #"SupRB Tuning": "BL",
+    # "NSGA2+InfoGain-tuned": "IG",
+    "NSGA2+Volume-tuned": "V",
+    "NSGA2+Support-tuned": "S",
+    "NSGA2+Novelty-tuned-P": "N-P",
+    "NSGA2+Novelty-tuned-G": "N-G",
 }
 
 ASOC = {
@@ -234,9 +237,9 @@ def run_ttests(setting):
             # ("NSGA2+InfoGain-tuned", "NSGA2+Volume-tuned", "IG", "Vol"),
             # ("NSGA2+InfoGain-tuned", "NSGA2+Support-tuned", "IG", "Sup"),
             # ("NSGA2+InfoGain-tuned", "NSGA2+Novelty-tuned", "IG", "Nov"),
-            ("NSGA2+Volume-tuned", "NSGA2+Support-tuned", "Vol", "Sup"),
-            ("NSGA2+Volume-tuned", "NSGA2+Novelty-tuned", "Vol", "Nov"),
-            ("NSGA2+Support-tuned", "NSGA2+Novelty-tuned", "Sup", "Nov"),
+            # ("NSGA2+Volume-tuned", "NSGA2+Support-tuned", "Vol", "Sup"),
+            # ("NSGA2+Volume-tuned", "NSGA2+Novelty-tuned", "Vol", "Nov"),
+            # ("NSGA2+Support-tuned", "NSGA2+Novelty-tuned", "Sup", "Nov"),
 
         ]
 
