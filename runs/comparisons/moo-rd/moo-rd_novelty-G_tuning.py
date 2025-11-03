@@ -128,10 +128,6 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             'rule_discovery__min_experience', 2, 32
         )
 
-        params.rule_discovery_max_restarts = trial.suggest_int(
-            'rule_discovery__max_restarts', 4, 32
-        )
-
         # GA is fixed
 
         # Mixing
