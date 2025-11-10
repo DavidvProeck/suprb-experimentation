@@ -29,9 +29,9 @@ experiment="runs/comparisons/moo-rd/moo-rd_novelty-G_tuning.py"
 # ---------------------------------------------------------------------------
 datasets=(
   airfoil_self_noise
-  concrete_strength
-  combined_cycle_power_plant
-  energy_cool
+#  concrete_strength
+#  combined_cycle_power_plant
+#  energy_cool
 )
 
 dataset="${datasets[$SLURM_ARRAY_TASK_ID]}"
