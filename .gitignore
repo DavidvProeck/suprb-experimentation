@@ -4,7 +4,8 @@ results
 Paretofront.png
 mlruns
 mlruns_csv
-outputs
+outputs/
+output_json/
 
 # MlFlow
 **/mlruns/**
