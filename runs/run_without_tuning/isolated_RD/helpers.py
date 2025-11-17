@@ -8,6 +8,7 @@ from suprb.solution.base import Solution
 from suprb.solution.fitness import ComplexityWu
 from suprb.solution.mixing_model import ErrorExperienceHeuristic
 
+
 def estimate_and_set_bounds(rule_discovery, X):
     bounds = estimate_bounds(X)
     for key, value in rule_discovery.get_params().items():
@@ -37,12 +38,10 @@ def init_rule_discovery_env(rule_discovery):
 
 
 def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=None, show_params=True, subtitle=None):
-    # Create figure with 2 rows:  top for the plot (4 units high), bottom for text (1 unit high)
     plt.rcParams["font.family"] = "serif"
     plt.rcParams["font.serif"] = ["Times New Roman", "Times", "DejaVu Serif"]
-    plt.rcParams["mathtext.fontset"] = "cm"  # for consistent math font
+    plt.rcParams["mathtext.fontset"] = "cm"
 
-    # Ensure text in PDF stays as text (not paths)
     plt.rcParams["pdf.fonttype"] = 42
     plt.rcParams["ps.fonttype"] = 42
     plt.rcParams["svg.fonttype"] = "none"
@@ -50,7 +49,6 @@ def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=No
     fig = plt.figure(figsize=(12, 6))
     gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1], hspace=0.2)
 
-    # Top axis
     ax = fig.add_subplot(gs[0])
     ax.scatter(X, y, s=10, color="lightgray", label="Eggholder samples")
     colors = plt.cm.tab10(np.linspace(0, 1, len(rules)))
@@ -73,7 +71,6 @@ def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=No
     ax.legend(loc="upper left", fontsize="small")
     ax.grid(True)
 
-    # Bottom axis for params
     if show_params:
         ax_txt = fig.add_subplot(gs[1])
         ax_txt.axis("off")  # hide ticks
@@ -84,7 +81,6 @@ def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=No
             ax_txt.text(0, 1, "\n".join(lines), va="top", ha="left",
                         fontsize="x-small", family="monospace")
 
-    # Save as high-quality vector PDF
     if filename:
         pdf_filename = filename.rsplit(".", 1)[0] + ".pdf"
         fig.savefig(pdf_filename, format="pdf", bbox_inches="tight")
@@ -92,7 +88,6 @@ def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=No
         print(f"Vector PDF saved to '{pdf_filename}'")
     else:
         plt.show()
-
 
 
 def build_filename(estimator):

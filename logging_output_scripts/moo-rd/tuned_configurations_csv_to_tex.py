@@ -63,7 +63,7 @@ def nice_param_order(keys):
         "rule_discovery__n_iter",
         "rule_discovery__mutation__sigma",
         "rule_discovery__min_experience",
-        "rule_discovery__init__fitness__alpha",  # BL only
+        "rule_discovery__init__fitness__alpha",
         "solution_composition__init__mixing__experience_calculation__upper_bound",
         "solution_composition__init__mixing__experience_weight",
         "solution_composition__init__mixing__filter_subpopulation__rule_amount",
@@ -74,9 +74,11 @@ def nice_param_order(keys):
     return ordered
 
 def main():
+    """
+    Generates a LaTeX multirow table for the tuned hyperparameters.
+    """
     cfg_runs = defaultdict(list)
 
-    # --- Read and group by configuration
     with open(INPUT_CSV, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -84,20 +86,17 @@ def main():
             dataset = extract_dataset(row["run_name"])
             params = parse_numeric_params(row["tuned_params"])
 
-            # Keep alpha only for BL
             if config != "BL":
                 params.pop("rule_discovery__init__fitness__alpha", None)
 
             cfg_runs[config].append({"dataset": dataset, "params": params})
 
-    # --- Collect all parameter names
     all_keys = set()
     for runs in cfg_runs.values():
         for r in runs:
             all_keys.update(r["params"].keys())
     ordered_keys = nice_param_order(all_keys)
 
-    # --- Write one unified multirow table
     with open(OUTPUT_TEX, "w", encoding="utf-8") as tex:
         tex.write("% Requires \\usepackage{booktabs,multirow}\n\n")
         tex.write("\\begin{table*}[h!]\n")

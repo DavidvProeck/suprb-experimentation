@@ -3,9 +3,9 @@ import yaml
 import csv
 from pathlib import Path
 
-# Path to your mlruns directory
-MLRUNS_DIR = Path("/home/vonproda/Desktop/BA/suprb-experimentation/mlruns")
+MLRUNS_DIR = Path("/mlruns")
 OUTPUT_CSV = "tuned_params_summary.csv"
+
 
 def extract_meta_info(meta_path: Path):
     """Extract run_id and run_name from a meta.yaml file."""
@@ -36,16 +36,13 @@ def main():
     for root, dirs, files in os.walk(MLRUNS_DIR):
         root_path = Path(root)
 
-        # Look specifically for tuned_params inside params folders
         if "tuned_params" in files and root_path.name == "params":
             tuned_params_path = root_path / "tuned_params"
             tuning_n_calls_path = root_path / "tuning_n_calls"
 
-            # meta.yaml is one directory above the params folder
             run_dir = root_path.parent
             meta_path = run_dir / "meta.yaml"
 
-            # The experiment folder is one level above the run directory
             experiment_id = run_dir.parent.name
 
             run_id, run_name = extract_meta_info(meta_path)
@@ -60,7 +57,7 @@ def main():
                 "tuned_params": tuned_params_content
             })
 
-    # Write results to CSV
+    #Write the hyperparameters tuned by Optuna, with additional information, to csv.
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["experiment_id", "run_id", "run_name", "tuning_n_calls", "tuned_params"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

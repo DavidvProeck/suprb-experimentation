@@ -7,7 +7,7 @@ import statistics
 from collections import defaultdict
 
 # Path to your mlruns directory
-MLRUNS_DIR = Path("/home/vonproda/Desktop/BA/suprb-experimentation/mlruns")
+MLRUNS_DIR = Path("/mlruns")
 OUTPUT_CSV = "elitist_metrics_summary_by_algorithm_dataset.csv"
 
 def extract_meta_info(meta_path: Path):
@@ -98,7 +98,6 @@ def main():
                 if avg_error is not None:
                     grouped_metrics[key]["error"].append(avg_error)
 
-    # Compute averages per (algorithm, dataset)
     data_rows = []
     for (algorithm, dataset), metrics in grouped_metrics.items():
         avg_complexity = statistics.mean(metrics["complexity"]) if metrics["complexity"] else "N/A"
@@ -112,15 +111,14 @@ def main():
             "num_runs": len(metrics["complexity"])
         })
 
-    # Write to CSV
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["algorithm", "dataset", "avg_elitist_complexity", "avg_elitist_error", "num_runs"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(data_rows)
 
-    print(f"✅ CSV created successfully: {OUTPUT_CSV}")
-    print(f"✅ Total (algorithm, dataset) pairs summarized: {len(data_rows)}")
+    print(f"CSV created successfully: {OUTPUT_CSV}")
+    print(f"Total (algorithm, dataset) pairs summarized: {len(data_rows)}")
 
 if __name__ == "__main__":
     main()
