@@ -31,9 +31,13 @@ def global_coverage(masks: np.ndarray, return_counts: bool = False):
 def overlap_metrics(masks: np.ndarray) -> Dict[str, float]:
     """
     Overlap metrics:
-    - Jaccard Distance in [0, 1]: avg pairwise Jaccard. Check for overlap where rules are active. Ignore uncovered samples as they would dominate the metric.
-    - redundancy in >= 0: avg extra hits per covered sample (0 = no overlap, 1≈each covered sample hit by 2 rules)
-    - gini_coverage in [0, 1]: Inequality of coverage across samples (0=even, 1=concentrated)
+    - Jaccard Distance in [0, 1]: avg pairwise Jaccard. Check for overlap where rules are active. Ignore uncovered samples as they would dominate the metric. Based on Luciano da F Costa. “Further generalizations of the Jaccard index”. In: arXiv preprint
+    arXiv:2110.09619 (2021).
+    - redundancy in >= 0: avg extra hits per covered sample (0 = no overlap, 1≈each covered sample hit by 2 rules) Based on Negar Koochakzadeh, Vahid Garuslu, and Frank Maurer. “Test Redundancy Mea-
+    surement Based on Coverage Information: Evaluations and Lessons Learned”. In:
+    2009, pp. 220–229. doi: 10.1109/ICST.2009.8.
+    - gini_coverage in [0, 1]: Inequality of coverage across samples (0=even, 1=concentrated) Based on Corrado Gini. Variabilità e mutabilità: contributo allo studio delle distribuzioni e delle
+    relazioni statistiche.[Fasc. I.] Tipogr. di P. Cuppini, 1912.
     """
 
     if masks.size == 0:
