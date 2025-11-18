@@ -2,7 +2,7 @@
 
 This repo contains a collection of preset experiments going beyond the examples in the main SupRB repository (https://github.com/heidmic/suprb). \
 This project is a fork of the original SupRB experimentation repository (https://github.com/heidmic/suprb-experimentation. \
-It extends the original work by adding multi-objective rule discovery (MOO-RD) using NSGA-II, developed as part of my bachelor’s thesis. \
+It extends the original work by adding multi-objective rule discovery (MOO-RD) using NSGA-II, developed as part of my bachelor’s thesis "Improving SupRB's Rule Discovery via Multi-Objective Optimization". \
 Isolated experiments on the rule discovery (Thesis Chapter 4) can be found here: **runs/run_without_tuning/isolated_RD/** \
 The full SupRB experiments (Thesis Chapter 5) can be found here: **runs/comparisons/moo-rd/** \
 
