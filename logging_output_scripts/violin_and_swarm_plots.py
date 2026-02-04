@@ -74,8 +74,10 @@ def create_plots():
             ax.set_xlabel(x_lab, weight="bold", labelpad=10)
 
             # Change this to adjust y_axis ticks
-            y_min = max(0, min(ax.get_yticks()))
-            y_max = min(1, max(ax.get_yticks()))
+            # y_min = max(0, min(ax.get_yticks()))
+            # y_max = min(1, max(ax.get_yticks()))
+            y_min = ax.get_ylim()[0]
+            y_max = ax.get_ylim()[1]
 
             # Change this to adjust the tick size
             num_ticks = 7
