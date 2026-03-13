@@ -211,8 +211,11 @@ def mlruns_to_csv(datasets, subdir, normalize):
         complexity = "metrics.elitist_complexity"
 
         df = all_runs_df[all_runs_df["tags.mlflow.runName"].str.contains(
-            dataset, case=False, na=False) & (all_runs_df["tags.fold"] == 'True')]
-        df = df[["tags.mlflow.runName", mse, complexity]]
+            dataset, case=False, na=False) & (all_runs_df["tags.fold"] == 'True')].copy()
+
+        df['fold'] = df['tags.mlflow.runName'].str.extract(r'fold-(\d+)').astype(int)
+
+        df = df[["tags.mlflow.runName", "fold", mse, complexity]]
         print(dataset, np.min(df[mse]), np.max(df[mse]), np.min(df[complexity]), np.max(df[complexity]))
 
         df[mse] *= -1
@@ -396,7 +399,7 @@ if __name__ == '__main__':
     sagas = ["diss-graphs/graphs/SAGA", saga, "Solution Composition", False, "mlruns_csv/SAGA"]
     sc_rd = ["diss-graphs/graphs/SC", sc_mix_rd, "Solution Composition", False, "mlruns_csv/SC"]
 
-    # mlruns_to_csv(datasets, "MIX", False)
+    mlruns_to_csv(datasets, "MIX", False)
 
     setting = test
     # setting = sc

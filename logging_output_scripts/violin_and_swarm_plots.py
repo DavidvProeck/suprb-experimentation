@@ -186,7 +186,7 @@ def create_plots():
                     ax.set_ylabel(y_label if i == 0 else "", weight="bold")
 
                 plt.tight_layout()
-                plt.savefig(f"{final_output_dir}/{y_label}_row_{name}.png")
+                plt.savefig(f"{final_output_dir}/{y_label}_row_{name}.pdf")
                 plt.close(fig)
 
         # if config["data_directory"] == "mlruns_csv/MIX":
