@@ -5,6 +5,7 @@ import numpy as np
 import time
 
 from logging_output_scripts.violin_and_swarm_plots import create_plots
+from logging_output_scripts.pareto_front_plots import create_pareto_front_plots
 from logging_output_scripts.summary_csv import create_summary_csv
 from logging_output_scripts.stat_analysis import calvo, ttest
 from logging_output_scripts.latex_tabulars import write_complexity_all
@@ -270,6 +271,7 @@ def run_main():
         filter_runs(all_runs_df)
 
     create_plots()
+    create_pareto_front_plots()
     calvo(ylabel=setting[2])
 
     if setting[0] == "diss-graphs/graphs/RBML":
@@ -399,7 +401,7 @@ if __name__ == '__main__':
     sagas = ["diss-graphs/graphs/SAGA", saga, "Solution Composition", False, "mlruns_csv/SAGA"]
     sc_rd = ["diss-graphs/graphs/SC", sc_mix_rd, "Solution Composition", False, "mlruns_csv/SC"]
 
-    mlruns_to_csv(datasets, "MIX", False)
+    # mlruns_to_csv(datasets, "MIX", False)
 
     setting = test
     # setting = sc
