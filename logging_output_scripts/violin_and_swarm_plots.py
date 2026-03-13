@@ -1,3 +1,5 @@
+from matplotlib.ticker import MaxNLocator
+
 from logging_output_scripts.utils import get_csv_df, get_normalized_df, check_and_create_dir, get_dataframe, get_all_runs, get_df
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -36,6 +38,8 @@ def create_plots():
         config = json.load(f)
 
     final_output_dir = f"{config['output_directory']}"
+
+    all_datasets_results = []
     scaler = MinMaxScaler()
 
     for problem in config['datasets']:
@@ -66,6 +70,8 @@ def create_plots():
         # Invert values since they are stored as negatives
         if not config["normalize_datasets"] and config["data_directory"] == "mlruns":
             res_var[mse] *= -1
+
+        all_datasets_results.append((config['datasets'][problem], res_var.copy()))
 
         def ax_config(axis, y_label):
             x_lab = ""
@@ -132,6 +138,51 @@ def create_plots():
                 ax_config(ax, y_label)
 
                 fig.savefig(f"{final_output_dir}/{name}_{datasets_map[problem]}_{y_label}.png")
+                plt.close(fig)
+
+    num_plots = len(all_datasets_results)
+
+    if num_plots > 0:
+
+        all_complexities = pd.concat([d[1][complexity] for d in all_datasets_results])
+        global_max = all_complexities.max()
+        y_max_limit = global_max * 1.1
+
+        for name, function in plots.items():
+            for y_label, y_axis in y_axis_label.items():
+                fig, axes = plt.subplots(1, num_plots, figsize=(6 * num_plots, 5), dpi=400, sharey=True)
+
+                if num_plots == 1:
+                    axes = [axes]
+
+                for i, (dataset_title, data) in enumerate(all_datasets_results):
+                    ax = axes[i]
+                    palette = sns.color_palette("tab10", n_colors=data["Used_Representation"].nunique())
+
+                    params = {
+                        'x': 'Used_Representation',
+                        'y': complexity,
+                        'hue': 'Used_Representation',
+                        'data': data,
+                        'palette': palette,
+                        'legend': False,
+                        'ax': ax
+                    }
+
+                    if name == "swarm":
+                        params['size'] = 3
+
+                    function(**params)
+
+                    ax.set_ylim(0, y_max_limit)
+                    ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins='auto'))
+
+                    ax.set_title(dataset_title, style="italic", fontsize=18)
+                    ax.set_xlabel("")
+                    ax.set_ylabel(y_label if i == 0 else "", weight="bold")
+
+                plt.tight_layout()
+                plt.savefig(f"{final_output_dir}/{y_label}_row_{name}.png")
                 plt.close(fig)
 
         # if config["data_directory"] == "mlruns_csv/MIX":

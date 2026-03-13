@@ -12,7 +12,7 @@ from logging_output_scripts.utils import filter_runs
 from logging_output_scripts import latex_tabulars
 
 datasets = {
-    # "airfoil_self_noise": "Airfoil Self-Noise", #Uncomment for all strategies except N-G
+    "airfoil_self_noise": "Airfoil Self-Noise", #Uncomment for all strategies except N-G
     "combined_cycle_power_plant": "Combined Cycle Power Plant",
     "concrete_strength": "Concrete Strength",
     "energy_cool": "Energy Efficiency Cooling",
@@ -72,8 +72,9 @@ nsga2 = {
     "MOO-RD-VarianceReduction-tuning": "VR",
     "MOO-RD-Volume-tuning": "V",
     "MOO-RD-Support-tuning": "S",
-    "MOO-RD-Novelty-P-tuning": "N-P",
-    "MOO-RD-Novelty-G-tuning": "N-G",
+    "MOO-RD-Novelty-P-tuning": "N",
+    # "MOO-RD-Novelty-P-tuning": "N-P",
+    # "MOO-RD-Novelty-G-tuning": "N-G", # No data on ASN
     "ES-Baseline-tuning": "BL"
     # "NSGA2+Volume-tuned": "V",
     # "NSGA2+Support-tuned": "S",
@@ -333,55 +334,55 @@ def run_main():
         ttest(latex=False, cand1="s:saga2", cand2="s:sas", cand1_name="SAGA2", cand2_name="SAGA4")
         ttest(latex=False, cand1="s:saga3", cand2="s:sas", cand1_name="SAGA3", cand2_name="SAGA4")
 
-    if setting[0] == "diss-graphs/graphs/NSGA2":
-        ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="ES-Baseline-tuning", cand1_name="IG", cand2_name="BL")
-        ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="ES-Baseline-tuning", cand1_name="VR",
-              cand2_name="BL")
-        ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="ES-Baseline-tuning", cand1_name="V", cand2_name="BL")
-        ttest(latex=False, cand1="MOO-RD-Support-tuning", cand2="ES-Baseline-tuning", cand1_name="S", cand2_name="BL")
-        ttest(latex=False, cand1="MOO-RD-Novelty-P-tuning", cand2="ES-Baseline-tuning", cand1_name="N-P",
-              cand2_name="BL")
-        ttest(latex=False, cand1="MOO-RD-Novelty-G-tuning", cand2="ES-Baseline-tuning", cand1_name="N-G",
-              cand2_name="BL")
-        # pairwise between the NSGA2 variants
-        ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-VarianceReduction-tuning", cand1_name="IG",
-              cand2_name="VR")
-        ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Volume-tuning", cand1_name="IG",
-              cand2_name="V")
-        ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Support-tuning", cand1_name="IG",
-              cand2_name="S")
-        ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="IG",
-              cand2_name="N-P")
-
-        ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Volume-tuning", cand1_name="VR",
-              cand2_name="V")
-        ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Support-tuning", cand1_name="VR",
-              cand2_name="S")
-        ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="VR",
-              cand2_name="N-P")
-
-        ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="MOO-RD-Support-tuning", cand1_name="V", cand2_name="S")
-        ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="V",
-              cand2_name="N-P")
-
-        ttest(latex=False, cand1="MOO-RD-Support-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="S",
-              cand2_name="N-P")
-
-        #Novelty-G:
-        ttest(latex=False, cand1="MOO-RD-Support-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="S",
-              cand2_name="N-G")
-
-        ttest(latex=False, cand1="MOO-RD-Novelty-P-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="N-P",
-              cand2_name="N-G")
-
-        ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="IG",
-              cand2_name="N-G")
-
-        ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="V",
-              cand2_name="N-G")
-
-        ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="VR",
-              cand2_name="N-G")
+    # if setting[0] == "diss-graphs/graphs/NSGA2":
+    #     ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="ES-Baseline-tuning", cand1_name="IG", cand2_name="BL")
+    #     ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="ES-Baseline-tuning", cand1_name="VR",
+    #           cand2_name="BL")
+    #     ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="ES-Baseline-tuning", cand1_name="V", cand2_name="BL")
+    #     ttest(latex=False, cand1="MOO-RD-Support-tuning", cand2="ES-Baseline-tuning", cand1_name="S", cand2_name="BL")
+    #     ttest(latex=False, cand1="MOO-RD-Novelty-P-tuning", cand2="ES-Baseline-tuning", cand1_name="N-P",
+    #           cand2_name="BL")
+    #     ttest(latex=False, cand1="MOO-RD-Novelty-G-tuning", cand2="ES-Baseline-tuning", cand1_name="N-G",
+    #           cand2_name="BL")
+    #     # pairwise between the NSGA2 variants
+    #     ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-VarianceReduction-tuning", cand1_name="IG",
+    #           cand2_name="VR")
+    #     ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Volume-tuning", cand1_name="IG",
+    #           cand2_name="V")
+    #     ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Support-tuning", cand1_name="IG",
+    #           cand2_name="S")
+    #     ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="IG",
+    #           cand2_name="N-P")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Volume-tuning", cand1_name="VR",
+    #           cand2_name="V")
+    #     ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Support-tuning", cand1_name="VR",
+    #           cand2_name="S")
+    #     ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="VR",
+    #           cand2_name="N-P")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="MOO-RD-Support-tuning", cand1_name="V", cand2_name="S")
+    #     ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="V",
+    #           cand2_name="N-P")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-Support-tuning", cand2="MOO-RD-Novelty-P-tuning", cand1_name="S",
+    #           cand2_name="N-P")
+    #
+    #     #Novelty-G:
+    #     ttest(latex=False, cand1="MOO-RD-Support-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="S",
+    #           cand2_name="N-G")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-Novelty-P-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="N-P",
+    #           cand2_name="N-G")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-InfoGain-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="IG",
+    #           cand2_name="N-G")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-Volume-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="V",
+    #           cand2_name="N-G")
+    #
+    #     ttest(latex=False, cand1="MOO-RD-VarianceReduction-tuning", cand2="MOO-RD-Novelty-G-tuning", cand1_name="VR",
+    #           cand2_name="N-G")
 
 
 if __name__ == '__main__':
@@ -395,7 +396,7 @@ if __name__ == '__main__':
     sagas = ["diss-graphs/graphs/SAGA", saga, "Solution Composition", False, "mlruns_csv/SAGA"]
     sc_rd = ["diss-graphs/graphs/SC", sc_mix_rd, "Solution Composition", False, "mlruns_csv/SC"]
 
-    mlruns_to_csv(datasets, "MIX", False)
+    # mlruns_to_csv(datasets, "MIX", False)
 
     setting = test
     # setting = sc
