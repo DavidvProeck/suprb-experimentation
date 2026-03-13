@@ -144,12 +144,13 @@ def create_plots():
 
     if num_plots > 0:
 
-        all_complexities = pd.concat([d[1][complexity] for d in all_datasets_results])
-        global_max = all_complexities.max()
-        y_max_limit = global_max * 1.1
+
 
         for name, function in plots.items():
             for y_label, y_axis in y_axis_label.items():
+                all_values = pd.concat([d[1][y_axis] for d in all_datasets_results])
+                global_max = all_values.max()
+                y_max_limit = global_max * 1.1
                 fig, axes = plt.subplots(1, num_plots, figsize=(6 * num_plots, 5), dpi=400, sharey=True)
 
                 if num_plots == 1:
@@ -161,7 +162,7 @@ def create_plots():
 
                     params = {
                         'x': 'Used_Representation',
-                        'y': complexity,
+                        'y': y_axis,
                         'hue': 'Used_Representation',
                         'data': data,
                         'palette': palette,
@@ -175,7 +176,10 @@ def create_plots():
                     function(**params)
 
                     ax.set_ylim(0, y_max_limit)
-                    ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins='auto'))
+                    if y_label == "Complexity":
+                        ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins='auto'))
+                    else:
+                        ax.yaxis.set_major_locator(MaxNLocator(nbins='auto'))
 
                     ax.set_title(dataset_title, style="italic", fontsize=18)
                     ax.set_xlabel("")
