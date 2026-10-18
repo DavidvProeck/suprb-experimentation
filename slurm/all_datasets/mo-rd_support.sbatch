@@ -6,8 +6,8 @@
 #SBATCH --partition=cpu
 #SBATCH --nodelist=oc-compute03
 #SBATCH --cpus-per-task=5
-#SBATCH --mem=40G
-#SBATCH --job-name=MOORDNoveltyG            # shows up in squeue/sacct and filenames
+#SBATCH --mem=20G
+#SBATCH --job-name=MOORDSupport           # shows up in squeue/sacct and filenames
 #SBATCH --array=0-3                              # one task per dataset (see list below)
 # Structured logs: output/<jobname>_<arrayid>_<taskid>.{txt,err}
 #SBATCH --output=output/%x_%A_%a.txt
@@ -22,20 +22,20 @@ set -euo pipefail
 JOB_DIR="/data/oc-compute03/$USER/suprb-experimentation"
 
 export PYTHONPATH="${JOB_DIR}:${JOB_DIR}/src/suprb:${PYTHONPATH:-}"
-experiment="runs/comparisons/moo-rd/moo-rd_novelty-G_tuning.py"
+experiment="runs/comparisons/mo-rd/support_tuning.py"
 
 # ---------------------------------------------------------------------------
 # 2) Map array-task ID → dataset name
 # ---------------------------------------------------------------------------
 datasets=(
   airfoil_self_noise
-#  concrete_strength
-#  combined_cycle_power_plant
-#  energy_cool
+  concrete_strength
+  combined_cycle_power_plant
+  energy_cool
 )
 
 dataset="${datasets[$SLURM_ARRAY_TASK_ID]}"
-study_name="MOO-RD-Novelty-G-tuning"
+study_name="MO-RD-Support-tuning"
 
 # ---------------------------------------------------------------------------
 # 3) Debug info

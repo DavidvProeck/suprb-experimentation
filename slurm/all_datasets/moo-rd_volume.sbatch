@@ -22,7 +22,7 @@ set -euo pipefail
 JOB_DIR="/data/oc-compute03/$USER/suprb-experimentation"
 
 export PYTHONPATH="${JOB_DIR}:${JOB_DIR}/src/suprb:${PYTHONPATH:-}"
-experiment="runs/comparisons/moo-rd/moo-rd_volume_tuning.py"
+experiment="runs/comparisons/mo-rd/volume_tuning.py"
 
 # ---------------------------------------------------------------------------
 # 2) Map array-task ID → dataset name
@@ -35,7 +35,7 @@ datasets=(
 )
 
 dataset="${datasets[$SLURM_ARRAY_TASK_ID]}"
-study_name="MOO-RD-Volume-tuning"
+study_name="MO-RD-Volume-tuning"
 
 # ---------------------------------------------------------------------------
 # 3) Debug info

@@ -7,7 +7,7 @@
 #SBATCH --nodelist=oc-compute03
 #SBATCH --cpus-per-task=5
 #SBATCH --mem=20G
-#SBATCH --job-name=ES_Warmup        # shows up in squeue/sacct and filenames
+#SBATCH --job-name=MOORDInfoGain          # shows up in squeue/sacct and filenames
 #SBATCH --array=0-3                              # one task per dataset (see list below)
 # Structured logs: output/<jobname>_<arrayid>_<taskid>.{txt,err}
 #SBATCH --output=output/%x_%A_%a.txt
@@ -22,7 +22,7 @@ set -euo pipefail
 JOB_DIR="/data/oc-compute03/$USER/suprb-experimentation"
 
 export PYTHONPATH="${JOB_DIR}:${JOB_DIR}/src/suprb:${PYTHONPATH:-}"
-experiment="runs/comparisons/moo-rd/suprb_warmup_tuning_es.py"
+experiment="runs/comparisons/mo-rd/infogain_tuning.py"
 
 # ---------------------------------------------------------------------------
 # 2) Map array-task ID → dataset name
@@ -35,7 +35,7 @@ datasets=(
 )
 
 dataset="${datasets[$SLURM_ARRAY_TASK_ID]}"
-study_name="ES-Warmup-tuning"
+study_name="MO-RD-InfoGain-tuning"
 
 # ---------------------------------------------------------------------------
 # 3) Debug info

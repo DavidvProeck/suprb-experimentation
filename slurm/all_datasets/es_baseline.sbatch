@@ -22,7 +22,7 @@ set -euo pipefail
 JOB_DIR="/data/oc-compute03/$USER/suprb-experimentation"
 
 export PYTHONPATH="${JOB_DIR}:${JOB_DIR}/src/suprb:${PYTHONPATH:-}"
-experiment="runs/comparisons/moo-rd/soo-rd_baseline_tuning.py"
+experiment="runs/comparisons/mo-rd/es_baseline_tuning.py"
 
 # ---------------------------------------------------------------------------
 # 2) Map array-task ID → dataset name
