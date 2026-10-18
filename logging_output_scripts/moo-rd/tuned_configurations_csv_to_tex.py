@@ -8,10 +8,12 @@ OUTPUT_TEX = "tuned_params_multirow_table.tex"
 
 CONFIG_ORDER = ["BL", "IG", "VR", "S", "V", "N-P", "N-G", "Other"]
 
+
 def extract_dataset(run_name: str):
     """Extract dataset name from run_name (after 'p:')."""
     m = re.search(r"p:([a-zA-Z0-9_]+)", run_name)
     return m.group(1) if m else "unknown"
+
 
 def simplify_run_name(run_name: str):
     """Simplify run name to configuration label."""
@@ -31,9 +33,11 @@ def simplify_run_name(run_name: str):
         return "V"
     return "Other"
 
+
 def sanitize_params_string(s: str):
     """Remove Python object references like <... object at 0x...>."""
     return re.sub(r"<[^>]+object at 0x[0-9a-fA-F]+>", "'<object>'", s)
+
 
 def parse_numeric_params(s: str):
     """Parse tuned_params string and keep only numeric values."""
@@ -43,9 +47,11 @@ def parse_numeric_params(s: str):
     except Exception:
         return {}
 
+
 def latex_escape(s: str):
     """Escape underscores for LaTeX."""
     return s.replace("_", "\\_")
+
 
 def format_number(v):
     """Format: integers stay integers, floats to 4 decimals."""
@@ -54,6 +60,7 @@ def format_number(v):
     if isinstance(v, float):
         return f"{v:.4f}"
     return ""
+
 
 def nice_param_order(keys):
     """Order columns logically."""
@@ -72,6 +79,7 @@ def nice_param_order(keys):
     ordered = [k for k in preferred if k in present]
     ordered += [k for k in sorted(keys) if k not in ordered]
     return ordered
+
 
 def main():
     """
@@ -133,6 +141,7 @@ def main():
         tex.write("\\end{table*}\n")
 
     print(f"Created single multirow LaTeX table: {OUTPUT_TEX}")
+
 
 if __name__ == "__main__":
     main()

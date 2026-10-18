@@ -19,19 +19,17 @@ def create_pareto_front_plots():
     """
     # --- Theme and Style ---
     sns.set_style("whitegrid")
-    sns.set_theme(style="whitegrid",
-                  font="Times New Roman",
-                  font_scale=1.7,
-                  rc={"pdf.fonttype": 42, "ps.fonttype": 42})
-    plt.rcParams['figure.dpi'] = 200
+    sns.set_theme(style="whitegrid", font="Times New Roman", font_scale=1.7, rc={"pdf.fonttype": 42, "ps.fonttype": 42})
+    plt.rcParams["figure.dpi"] = 200
 
     # --- Load Config ---
-    config_path = 'logging_output_scripts/config.json' if os.path.exists(
-        'logging_output_scripts/config.json') else 'config.json'
+    config_path = (
+        "logging_output_scripts/config.json" if os.path.exists("logging_output_scripts/config.json") else "config.json"
+    )
     with open(config_path) as f:
         config = json.load(f)
 
-    final_output_dir = config['output_directory']
+    final_output_dir = config["output_directory"]
     if not os.path.exists(final_output_dir):
         os.makedirs(final_output_dir, exist_ok=True)
 
@@ -39,10 +37,10 @@ def create_pareto_front_plots():
 
     # --- 1. Data Collection ---
     # We aggregate all data first; no plotting happens in this loop.
-    for problem_key, problem_display_name in config['datasets'].items():
+    for problem_key, problem_display_name in config["datasets"].items():
         res_var = pd.DataFrame()
 
-        for heuristic_id, renamed_heuristic in config['heuristics'].items():
+        for heuristic_id, renamed_heuristic in config["heuristics"].items():
             if config["normalize_datasets"]:
                 fold_df = get_normalized_df(heuristic_id, "../mlruns_csv/MIX")
             else:
@@ -52,7 +50,7 @@ def create_pareto_front_plots():
                     fold_df = get_csv_df(heuristic_id, problem_key)
 
             if fold_df is not None and not fold_df.empty:
-                fold_df['Used_Representation'] = renamed_heuristic
+                fold_df["Used_Representation"] = renamed_heuristic
                 res_var = pd.concat([res_var, fold_df], ignore_index=True)
 
         if not res_var.empty:
@@ -61,8 +59,8 @@ def create_pareto_front_plots():
                 res_var[mse] *= -1
 
             # Ensure 'fold' is treated as a string for discrete coloring
-            if 'fold' in res_var.columns:
-                res_var['fold'] = res_var['fold'].astype(str)
+            if "fold" in res_var.columns:
+                res_var["fold"] = res_var["fold"].astype(str)
 
             all_datasets_results.append((problem_display_name, res_var.copy()))
 
@@ -76,23 +74,22 @@ def create_pareto_front_plots():
         for i, (dataset_title, data) in enumerate(all_datasets_results):
             ax = axes[0, i]
 
-            is_last = (i == num_plots - 1)
+            is_last = i == num_plots - 1
 
             sns.scatterplot(
                 data=data,
                 x=mse,
                 y=complexity,
-                hue='fold' if 'fold' in data.columns else None,
-                style='Used_Representation',
-                palette='tab10',
+                hue="fold" if "fold" in data.columns else None,
+                style="Used_Representation",
+                palette="tab10",
                 s=100,
                 legend=is_last,  # Legend only on the last plot
-                ax=ax
+                ax=ax,
             )
 
             if is_last:
-                ax.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left', borderaxespad=0.)
-
+                ax.legend(bbox_to_anchor=(1.05, 1.0), loc="upper left", borderaxespad=0.0)
 
             ax.set_title(dataset_title, style="italic", fontsize=20)
             ax.set_xlabel("MSE", weight="bold")
@@ -113,5 +110,5 @@ def create_pareto_front_plots():
         print("No data found to plot.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create_pareto_front_plots()

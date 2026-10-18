@@ -21,9 +21,11 @@ def load_eggholder(n_samples=1000, noise=0.0, random_state=None):
     random_state = check_random_state(random_state)
 
     X = np.linspace(0, 20, num=n_samples)
-    y = -(X + 47) * np.sin(np.sqrt(np.abs(X + 0.5 * X + 47))) \
-        - X * np.sin(np.sqrt(np.abs(X - (X + 47)))) \
+    y = (
+        -(X + 47) * np.sin(np.sqrt(np.abs(X + 0.5 * X + 47)))
+        - X * np.sin(np.sqrt(np.abs(X - (X + 47))))
         + 5 * np.sin(1.5 * X)
+    )
     y += random_state.normal(scale=noise, size=y.shape)
     X = X.reshape(-1, 1)
 
@@ -61,9 +63,7 @@ def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=No
         Xm_sorted = Xm[idx]
         y_pred = rule.predict(Xm_sorted)
         vol, err = rule.volume_, rule.error_
-        ax.plot(Xm_sorted, y_pred,
-                label=f"Rule {i+1} (V:{vol:.3f}, E:{err:.3f})",
-                color=colors[i])
+        ax.plot(Xm_sorted, y_pred, label=f"Rule {i+1} (V:{vol:.3f}, E:{err:.3f})", color=colors[i])
     title = "Rule Predictions on Eggholder Samples"
     if subtitle is not None:
         title += subtitle
@@ -78,8 +78,7 @@ def visualize_rule_predictions(X, y, rules, runtime, estimator=None, filename=No
             params = estimator.get_params()
             lines = [f"{k} = {v}" for k, v in sorted(params.items())]
             lines.append(f"runtime = {runtime}")
-            ax_txt.text(0, 1, "\n".join(lines), va="top", ha="left",
-                        fontsize="x-small", family="monospace")
+            ax_txt.text(0, 1, "\n".join(lines), va="top", ha="left", fontsize="x-small", family="monospace")
 
     if filename:
         pdf_filename = filename.rsplit(".", 1)[0] + ".pdf"

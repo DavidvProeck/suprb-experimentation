@@ -7,23 +7,21 @@ import pandas as pd
 
 results_dict = {}
 
+
 def _norm(s: str) -> str:
-    return str(s).lstrip('/').strip()
+    return str(s).lstrip("/").strip()
 
 
-def _warn_dropped(reason: str, rows: pd.DataFrame, prefix: str=""):
+def _warn_dropped(reason: str, rows: pd.DataFrame, prefix: str = ""):
     if rows is None or rows.empty:
         return
     head = rows["tags.mlflow.runName"].head(5).tolist()
-    msg = (
-        f"{prefix}Dropped {len(rows)} run(s) ({reason}). )"
-        f"Examples: {head}{' ...' if len(rows) > 5 else ''}"
-    )
+    msg = f"{prefix}Dropped {len(rows)} run(s) ({reason}). )" f"Examples: {head}{' ...' if len(rows) > 5 else ''}"
     print(msg, file=sys.stderr)
 
 
 def filter_runs(all_runs_df=None):
-    with open('logging_output_scripts/config.json') as f:
+    with open("logging_output_scripts/config.json") as f:
         config = json.load(f)
 
     if all_runs_df is not None:
@@ -34,9 +32,9 @@ def filter_runs(all_runs_df=None):
         for dataset in config["datasets"].keys():
             d_pat = _norm(dataset)
             filtered_df = all_runs_df[
-                all_runs_df["tags.mlflow.runName"].str.contains(h_pat, case=False, na=False, regex=False) &
-                all_runs_df["tags.mlflow.runName"].str.contains(d_pat, case=False, na=False, regex=False) &
-                (all_runs_df["tags.fold"] == 'True')
+                all_runs_df["tags.mlflow.runName"].str.contains(h_pat, case=False, na=False, regex=False)
+                & all_runs_df["tags.mlflow.runName"].str.contains(d_pat, case=False, na=False, regex=False)
+                & (all_runs_df["tags.fold"] == "True")
             ]
 
             if not filtered_df.empty:
@@ -48,7 +46,7 @@ def filter_runs(all_runs_df=None):
 
 
 def get_normalized_df(heuristic, filepath):
-    with open('logging_output_scripts/config.json') as f:
+    with open("logging_output_scripts/config.json") as f:
         config = json.load(f)
     df = pd.DataFrame()
     for dataset in config["datasets"]:
@@ -58,7 +56,7 @@ def get_normalized_df(heuristic, filepath):
 
 
 def get_csv_df(heuristic, dataset):
-    with open('logging_output_scripts/config.json') as f:
+    with open("logging_output_scripts/config.json") as f:
         config = json.load(f)
 
     mse = "metrics.test_neg_mean_squared_error"
@@ -87,14 +85,14 @@ def get_csv_df(heuristic, dataset):
 def get_df(heuristic, dataset):
     return results_dict[(heuristic, dataset)]
 
-    with open('logging_output_scripts/config.json') as f:
+    with open("logging_output_scripts/config.json") as f:
         config = json.load(f)
 
     # all_runs = [item for item in next(os.walk(config['data_directory']))[1] if item != '.trash']
 
     df = mlflow.search_runs(
         filter_string=f"tags.mlflow.runName ILIKE '%{heuristic}%' AND tags.mlflow.runName ILIKE '%{dataset}%' AND tags.fold = 'True'",
-        search_all_experiments=True
+        search_all_experiments=True,
     )
 
     if not df.empty:
@@ -106,17 +104,17 @@ def get_df(heuristic, dataset):
 
     for run in all_runs:
         df = mlflow.search_runs([run])
-        if not 'tags.mlflow.runName' in df:
+        if not "tags.mlflow.runName" in df:
             continue
-        print(df['tags.mlflow.runName'])
+        print(df["tags.mlflow.runName"])
         exit()
-        print(df['tags.mlflow.runName'][0])
+        print(df["tags.mlflow.runName"][0])
 
-        dataset_mask = df['tags.mlflow.runName'].str.contains(f"{dataset}")
-        fold_mask = df['tags.fold'].str.contains("True", na=False)
+        dataset_mask = df["tags.mlflow.runName"].str.contains(f"{dataset}")
+        fold_mask = df["tags.fold"].str.contains("True", na=False)
 
         if heuristic:
-            heuristic_mask = df['tags.mlflow.runName'].str.contains(f"{heuristic}")
+            heuristic_mask = df["tags.mlflow.runName"].str.contains(f"{heuristic}")
             df = df[heuristic_mask & dataset_mask & fold_mask]
         else:
             df = df[dataset_mask & fold_mask]
@@ -131,15 +129,15 @@ def get_df(heuristic, dataset):
 def get_all_runs(problem):
     print("Get all mlflow runs...")
 
-    with open('logging_output_scripts/config.json') as f:
+    with open("logging_output_scripts/config.json") as f:
         config = json.load(f)
 
     all_runs_list = []
-    heuristics = [key for key in config['heuristics']]
-    all_runs = [item for item in next(os.walk(config['data_directory']))[1] if item != '.trash' and item != '0']
+    heuristics = [key for key in config["heuristics"]]
+    all_runs = [item for item in next(os.walk(config["data_directory"]))[1] if item != ".trash" and item != "0"]
 
     for run in all_runs:
-        for run_name in mlflow.search_runs([run])['tags.mlflow.runName']:
+        for run_name in mlflow.search_runs([run])["tags.mlflow.runName"]:
             if problem in run_name:
                 if any(substring in run_name for substring in heuristics):
                     all_runs_list.append(mlflow.search_runs([run]))
@@ -151,16 +149,16 @@ def get_all_runs(problem):
 def get_dataframe(all_runs_list, heuristic, dataset):
     df = None
     for run in all_runs_list:
-        df = run[run['tags.mlflow.runName'].str.contains(f"{heuristic}")]
+        df = run[run["tags.mlflow.runName"].str.contains(f"{heuristic}")]
 
         if not df.empty:
-            df = df[df['tags.mlflow.runName'].str.contains(f"{dataset}")]
+            df = df[df["tags.mlflow.runName"].str.contains(f"{dataset}")]
         else:
             continue
 
         if not df.empty:
             # Filter out individual runs (Removes averaged values)
-            df = df[df['tags.fold'].str.contains("True", na=False)]
+            df = df[df["tags.fold"].str.contains("True", na=False)]
             return df
         else:
             continue
@@ -208,5 +206,5 @@ datasets_map = {
     "s:saga1": "SAGA1",
     "s:saga2": "SAGA2",
     "s:saga3": "SAGA3",
-    "s:sas": "SAGA4"
+    "s:sas": "SAGA4",
 }

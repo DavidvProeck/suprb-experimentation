@@ -19,6 +19,7 @@ def extract_meta_info(meta_path: Path):
         print(f"[WARNING] Could not read meta.yaml at {meta_path}: {e}")
         return "N/A", "N/A"
 
+
 def read_file_content(file_path: Path):
     """Read the content of a file as a string."""
     try:
@@ -29,6 +30,7 @@ def read_file_content(file_path: Path):
     except Exception as e:
         print(f"[WARNING] Could not read file at {file_path}: {e}")
         return "N/A"
+
 
 def main():
     data_rows = []
@@ -49,15 +51,17 @@ def main():
             tuned_params_content = read_file_content(tuned_params_path)
             tuning_n_calls_content = read_file_content(tuning_n_calls_path)
 
-            data_rows.append({
-                "experiment_id": experiment_id,
-                "run_id": run_id,
-                "run_name": run_name,
-                "tuning_n_calls": tuning_n_calls_content,
-                "tuned_params": tuned_params_content
-            })
+            data_rows.append(
+                {
+                    "experiment_id": experiment_id,
+                    "run_id": run_id,
+                    "run_name": run_name,
+                    "tuning_n_calls": tuning_n_calls_content,
+                    "tuned_params": tuned_params_content,
+                }
+            )
 
-    #Write the hyperparameters tuned by Optuna, with additional information, to csv.
+    # Write the hyperparameters tuned by Optuna, with additional information, to csv.
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["experiment_id", "run_id", "run_name", "tuning_n_calls", "tuned_params"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -66,6 +70,7 @@ def main():
 
     print(f"CSV created successfully: {OUTPUT_CSV}")
     print(f"Total tuned_params files found: {len(data_rows)}")
+
 
 if __name__ == "__main__":
     main()

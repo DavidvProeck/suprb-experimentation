@@ -10,6 +10,7 @@ from collections import defaultdict
 MLRUNS_DIR = Path("/mlruns")
 OUTPUT_CSV = "elitist_metrics_summary_by_algorithm_dataset.csv"
 
+
 def extract_meta_info(meta_path: Path):
     """Extract run_id and run_name from a meta.yaml file."""
     try:
@@ -21,6 +22,7 @@ def extract_meta_info(meta_path: Path):
     except Exception as e:
         print(f"[WARNING] Could not read meta.yaml at {meta_path}: {e}")
         return "N/A", "N/A"
+
 
 def read_metric_file(metric_path: Path):
     """Read MLflow metric file and return the average of its values."""
@@ -43,6 +45,7 @@ def read_metric_file(metric_path: Path):
         print(f"[WARNING] Could not read metric file at {metric_path}: {e}")
         return None
 
+
 def parse_run_name(run_name: str):
     """
     Extract algorithm and dataset names from a run_name string.
@@ -60,11 +63,11 @@ def parse_run_name(run_name: str):
 
     # Algorithm extraction:
     # Matches either "MOO-RD-" or "ES-" followed by the algorithm name (letters, digits, _, or -)
-    algo_match = re.search(r'(?:MOO-RD-|ES-)([\w-]+)-tuning', run_name)
+    algo_match = re.search(r"(?:MOO-RD-|ES-)([\w-]+)-tuning", run_name)
     algorithm = algo_match.group(1) if algo_match else "Unknown"
 
     # Dataset extraction: after 'p:' and before ';'
-    dataset_match = re.search(r'p:([^;]+);', run_name)
+    dataset_match = re.search(r"p:([^;]+);", run_name)
     dataset = dataset_match.group(1) if dataset_match else "Unknown"
 
     return (algorithm, dataset)
@@ -103,13 +106,15 @@ def main():
         avg_complexity = statistics.mean(metrics["complexity"]) if metrics["complexity"] else "N/A"
         avg_error = statistics.mean(metrics["error"]) if metrics["error"] else "N/A"
 
-        data_rows.append({
-            "algorithm": algorithm,
-            "dataset": dataset,
-            "avg_elitist_complexity": avg_complexity,
-            "avg_elitist_error": avg_error,
-            "num_runs": len(metrics["complexity"])
-        })
+        data_rows.append(
+            {
+                "algorithm": algorithm,
+                "dataset": dataset,
+                "avg_elitist_complexity": avg_complexity,
+                "avg_elitist_error": avg_error,
+                "num_runs": len(metrics["complexity"]),
+            }
+        )
 
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["algorithm", "dataset", "avg_elitist_complexity", "avg_elitist_error", "num_runs"]
@@ -119,6 +124,7 @@ def main():
 
     print(f"CSV created successfully: {OUTPUT_CSV}")
     print(f"Total (algorithm, dataset) pairs summarized: {len(data_rows)}")
+
 
 if __name__ == "__main__":
     main()

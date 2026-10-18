@@ -7,8 +7,15 @@ from suprb import rule
 from suprb.optimizer.rule import origin, mutation
 from suprb.optimizer.rule.es import ES1xLambda
 
-from helpers import estimate_and_set_bounds, load_eggholder, init_rule_discovery_env, build_filename, visualize_rule_predictions
+from helpers import (
+    estimate_and_set_bounds,
+    load_eggholder,
+    init_rule_discovery_env,
+    build_filename,
+    visualize_rule_predictions,
+)
 from metrics import summarize_rule_set, save_metrics_to_csv
+
 
 def run():
     t0 = time()
@@ -18,16 +25,16 @@ def run():
     mu = 16
     rule_discovery = ES1xLambda(
         n_iter=10,
-        operator='&',
+        operator="&",
         delay=5,
         lmbda=64,
         origin_generation=origin.SquaredError(),
-        mutation=mutation.HalfnormIncrease(sigma=1.22,
-                                           matching_type=rule.matching.OrderedBound([-1, 1])),
+        mutation=mutation.HalfnormIncrease(sigma=1.22, matching_type=rule.matching.OrderedBound([-1, 1])),
         init=rule.initialization.MeanInit(
             fitness=rule.fitness.VolumeWu(),
             model=Ridge(alpha=0.01, random_state=random_state),
-            matching_type=rule.matching.OrderedBound([-1, 1])),
+            matching_type=rule.matching.OrderedBound([-1, 1]),
+        ),
     )
     init_rule_discovery_env(rule_discovery)
 
@@ -59,7 +66,7 @@ def run():
         "results/results_metrics.csv",
         extra_info={
             "graph_filename": filename,
-        }
+        },
     )
 
 

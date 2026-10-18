@@ -1,6 +1,13 @@
 from matplotlib.ticker import MaxNLocator
 
-from logging_output_scripts.utils import get_csv_df, get_normalized_df, check_and_create_dir, get_dataframe, get_all_runs, get_df
+from logging_output_scripts.utils import (
+    get_csv_df,
+    get_normalized_df,
+    check_and_create_dir,
+    get_dataframe,
+    get_all_runs,
+    get_df,
+)
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -19,22 +26,20 @@ def create_plots():
     on multiple datasets
     """
     sns.set_style("whitegrid")
-    sns.set_theme(style="whitegrid",
-                  font="Times New Roman",
-                  font_scale=1.7,
-                  rc={
-                      "lines.linewidth": 1,
-                      "pdf.fonttype": 42,
-                      "ps.fonttype": 42
-                  })
+    sns.set_theme(
+        style="whitegrid",
+        font="Times New Roman",
+        font_scale=1.7,
+        rc={"lines.linewidth": 1, "pdf.fonttype": 42, "ps.fonttype": 42},
+    )
 
-    plt.rcParams['font.family'] = 'serif'
-    plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
-    plt.rcParams['figure.dpi'] = 200
+    plt.rcParams["font.family"] = "serif"
+    plt.rcParams["font.serif"] = ["Times New Roman"] + plt.rcParams["font.serif"]
+    plt.rcParams["figure.dpi"] = 200
 
     plt.tight_layout()
 
-    with open('logging_output_scripts/config.json') as f:
+    with open("logging_output_scripts/config.json") as f:
         config = json.load(f)
 
     final_output_dir = f"{config['output_directory']}"
@@ -42,13 +47,13 @@ def create_plots():
     all_datasets_results = []
     scaler = MinMaxScaler()
 
-    for problem in config['datasets']:
+    for problem in config["datasets"]:
         first = True
         res_var = 0
         counter = 0
         fold_df = None
 
-        for heuristic, renamed_heuristic in config['heuristics'].items():
+        for heuristic, renamed_heuristic in config["heuristics"].items():
             if config["normalize_datasets"]:
                 fold_df = get_normalized_df(heuristic, "../mlruns_csv/MIX")
             else:
@@ -71,12 +76,12 @@ def create_plots():
         if not config["normalize_datasets"] and config["data_directory"] == "mlruns":
             res_var[mse] *= -1
 
-        all_datasets_results.append((config['datasets'][problem], res_var.copy()))
+        all_datasets_results.append((config["datasets"][problem], res_var.copy()))
 
         def ax_config(axis, y_label):
             x_lab = ""
             ax.set_ylabel(y_label, weight="bold")
-            ax.set_title(config['datasets'][problem], style="italic", fontsize=14)
+            ax.set_title(config["datasets"][problem], style="italic", fontsize=14)
             ax.set_xlabel(x_lab, weight="bold", labelpad=10)
 
             # Change this to adjust y_axis ticks
@@ -92,7 +97,7 @@ def create_plots():
             y_tick_positions = np.linspace(y_min, y_max, num_ticks)
             y_tick_positions = np.round(y_tick_positions, 3)
 
-            plt.yticks(y_tick_positions, [f'{x:.3g}' for x in y_tick_positions])
+            plt.yticks(y_tick_positions, [f"{x:.3g}" for x in y_tick_positions])
 
         ################### MSE ###########################
         plots = {
@@ -101,12 +106,10 @@ def create_plots():
             #  "box": sns.boxplot
         }
 
-        y_axis_label = {"MSE": mse,
-                        "Complexity": complexity
-                        }
+        y_axis_label = {"MSE": mse, "Complexity": complexity}
 
-        f_index = heuristic.find('f:')
-        result = heuristic[f_index+2:]
+        f_index = heuristic.find("f:")
+        result = heuristic[f_index + 2 :]
 
         for name, function in plots.items():
             for y_label, y_axis in y_axis_label.items():
@@ -116,22 +119,22 @@ def create_plots():
                 palette = sns.color_palette("tab10", n_colors=res_var["Used_Representation"].nunique())
                 if name == "swarm":
                     ax = function(
-                        x='Used_Representation',
+                        x="Used_Representation",
                         y=y_axis,
-                        hue='Used_Representation',
+                        hue="Used_Representation",
                         data=res_var,
                         size=3,
                         palette=palette,
-                        legend=False
+                        legend=False,
                     )
                 else:
                     ax = function(
-                        x='Used_Representation',
+                        x="Used_Representation",
                         y=y_axis,
-                        hue='Used_Representation',
+                        hue="Used_Representation",
                         data=res_var,
                         palette=palette,
-                        legend=False
+                        legend=False,
                     )
 
                 # ax = function(x='Used_Representation', y=y_axis, data=res_var, size=3)
@@ -143,8 +146,6 @@ def create_plots():
     num_plots = len(all_datasets_results)
 
     if num_plots > 0:
-
-
 
         for name, function in plots.items():
             for y_label, y_axis in y_axis_label.items():
@@ -161,25 +162,25 @@ def create_plots():
                     palette = sns.color_palette("tab10", n_colors=data["Used_Representation"].nunique())
 
                     params = {
-                        'x': 'Used_Representation',
-                        'y': y_axis,
-                        'hue': 'Used_Representation',
-                        'data': data,
-                        'palette': palette,
-                        'legend': False,
-                        'ax': ax
+                        "x": "Used_Representation",
+                        "y": y_axis,
+                        "hue": "Used_Representation",
+                        "data": data,
+                        "palette": palette,
+                        "legend": False,
+                        "ax": ax,
                     }
 
                     if name == "swarm":
-                        params['size'] = 3
+                        params["size"] = 3
 
                     function(**params)
 
                     ax.set_ylim(0, y_max_limit)
                     if y_label == "Complexity":
-                        ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins='auto'))
+                        ax.yaxis.set_major_locator(MaxNLocator(integer=True, nbins="auto"))
                     else:
-                        ax.yaxis.set_major_locator(MaxNLocator(nbins='auto'))
+                        ax.yaxis.set_major_locator(MaxNLocator(nbins="auto"))
 
                     ax.set_title(dataset_title, style="italic", fontsize=18)
                     ax.set_xlabel("")
@@ -193,5 +194,5 @@ def create_plots():
         #     return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create_plots()

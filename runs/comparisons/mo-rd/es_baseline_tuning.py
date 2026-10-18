@@ -23,27 +23,34 @@ from suprb.optimizer.rule import es, origin, mutation
 from suprb.solution.initialization import RandomInit
 import suprb.solution.mixing_model as mixing_model
 
-
 random_state = 42
 
 
 def load_dataset(name: str, **kwargs) -> tuple[np.ndarray, np.ndarray]:
     method_name = f"load_{name}"
     from problems import datasets
+
     if hasattr(datasets, method_name):
         return getattr(datasets, method_name)(**kwargs)
 
 
 @click.command()
-@click.option('-p', '--problem', type=click.STRING, default='airfoil_self_noise')
-@click.option('-j', '--job_id', type=click.STRING, default='NA')
-@click.option('-r', '--rule_amount', type=click.INT, default=1)
-@click.option('-f', '--filter_subpopulation', type=click.STRING, default='FilterSubpopulation')
-@click.option('-e', '--experience_calculation', type=click.STRING, default='ExperienceCalculation')
-@click.option('-w', '--experience_weight', type=click.INT, default=1)
-@click.option('-n', '--study_name', type=click.STRING, default=None)
-def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
-        experience_calculation: str, experience_weight: int, study_name: str):
+@click.option("-p", "--problem", type=click.STRING, default="airfoil_self_noise")
+@click.option("-j", "--job_id", type=click.STRING, default="NA")
+@click.option("-r", "--rule_amount", type=click.INT, default=1)
+@click.option("-f", "--filter_subpopulation", type=click.STRING, default="FilterSubpopulation")
+@click.option("-e", "--experience_calculation", type=click.STRING, default="ExperienceCalculation")
+@click.option("-w", "--experience_weight", type=click.INT, default=1)
+@click.option("-n", "--study_name", type=click.STRING, default=None)
+def run(
+    problem: str,
+    job_id: str,
+    rule_amount: int,
+    filter_subpopulation: str,
+    experience_calculation: str,
+    experience_weight: int,
+    study_name: str,
+):
     print(f"Problem is {problem}, with job id {job_id}")
 
     X, y = load_dataset(name=problem, return_X_y=True)
@@ -52,25 +59,20 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
 
     estimator = SupRB(
         rule_discovery=es.ES1xLambda(
-            operator='&',
+            operator="&",
             n_iter=1000,
             delay=30,
-            init=rule.initialization.MeanInit(fitness=rule.fitness.VolumeWu(),
-                                              model=Ridge(alpha=0.01,
-                                                          random_state=random_state)),
+            init=rule.initialization.MeanInit(
+                fitness=rule.fitness.VolumeWu(), model=Ridge(alpha=0.01, random_state=random_state)
+            ),
             mutation=mutation.HalfnormIncrease(),
             origin_generation=origin.SquaredError(),
         ),
-        solution_composition=ga.GeneticAlgorithm(
-            n_iter=32,
-            population_size=32,
-            selection=ga.selection.Tournament()
-        ),
+        solution_composition=ga.GeneticAlgorithm(n_iter=32, population_size=32, selection=ga.selection.Tournament()),
         n_iter=32,
         n_rules=4,
         verbose=10,
-        logger=CombinedLogger(
-            [('stdout', StdoutLogger()), ('default', DefaultLogger())]),
+        logger=CombinedLogger([("stdout", StdoutLogger()), ("default", DefaultLogger())]),
     )
 
     tuning_params = dict(
@@ -80,10 +82,10 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
         n_jobs_cv=4,
         n_jobs=4,
         n_calls=1000,
-        timeout=60*60*24*3,  # 72 hours
-        scoring='neg_mean_squared_error',
+        timeout=60 * 60 * 24 * 3,  # 72 hours
+        scoring="neg_mean_squared_error",
         # scoring='fitness',
-        verbose=10
+        verbose=10,
     )
 
     @param_space()
@@ -91,12 +93,13 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
         # ES
         sigma_space = [0, np.sqrt(X.shape[1])]
 
-        params.rule_discovery__mutation__sigma = trial.suggest_float('rule_discovery__mutation__sigma', *sigma_space)
+        params.rule_discovery__mutation__sigma = trial.suggest_float("rule_discovery__mutation__sigma", *sigma_space)
         params.rule_discovery__init__fitness__alpha = trial.suggest_float(
-            'rule_discovery__init__fitness__alpha', 0.01, 0.2)
+            "rule_discovery__init__fitness__alpha", 0.01, 0.2
+        )
 
-        params.rule_discovery__lmbda = trial.suggest_int('rule_discovery__lmbda', 10, 30)
-        params.rule_discovery__n_iter = trial.suggest_int('rule_discovery__n_iter', 500, 1500)
+        params.rule_discovery__lmbda = trial.suggest_int("rule_discovery__lmbda", 10, 30)
+        params.rule_discovery__n_iter = trial.suggest_int("rule_discovery__n_iter", 500, 1500)
         # GA is fixed
 
         # Mixing
@@ -105,22 +108,31 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
 
         params.solution_composition__init__mixing__filter_subpopulation = getattr(mixing_model, filter_subpopulation)()
         params.solution_composition__init__mixing__experience_calculation = getattr(
-            mixing_model, experience_calculation)()
+            mixing_model, experience_calculation
+        )()
 
         # Upper and lower bound clip the experience into a given range
         # params.solution_composition__init__mixing__experience_calculation__lower_bound = trial.suggest_float(
         #     'solution_composition__init__mixing__experience_calculation__lower_bound', 0, 10)
 
-        if isinstance(params.solution_composition__init__mixing__experience_calculation, mixing_model.CapExperienceWithDimensionality):
+        if isinstance(
+            params.solution_composition__init__mixing__experience_calculation,
+            mixing_model.CapExperienceWithDimensionality,
+        ):
             params.solution_composition__init__mixing__experience_calculation__upper_bound = trial.suggest_float(
-                'solution_composition__init__mixing__experience_calculation__upper_bound', 2, 5)
+                "solution_composition__init__mixing__experience_calculation__upper_bound", 2, 5
+            )
         else:
             params.solution_composition__init__mixing__experience_calculation__upper_bound = trial.suggest_int(
-                'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
+                "solution_composition__init__mixing__experience_calculation__upper_bound", 20, 50
+            )
 
-    experiment_name = f'ES-Baseline-tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
+    experiment_name = (
+        f"ES-Baseline-tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}"
+        or study_name
+    )
     print(experiment_name)
-    experiment = Experiment(name=experiment_name,  verbose=10)
+    experiment = Experiment(name=experiment_name, verbose=10)
 
     tuner = OptunaTuner(X_train=X, y_train=y, **tuning_params)
     experiment.with_tuning(suprb_ES_GA_space, tuner=tuner)
@@ -128,15 +140,13 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     random_states = np.random.SeedSequence(random_state).generate_state(8)
     experiment.with_random_states(random_states, n_jobs=8)
 
-    evaluation = CrossValidate(
-        estimator=estimator, X=X, y=y, random_state=random_state, verbose=10)
+    evaluation = CrossValidate(estimator=estimator, X=X, y=y, random_state=random_state, verbose=10)
 
-    experiment.perform(evaluation, cv=ShuffleSplit(
-        n_splits=8, test_size=0.25, random_state=random_state), n_jobs=8)
+    experiment.perform(evaluation, cv=ShuffleSplit(n_splits=8, test_size=0.25, random_state=random_state), n_jobs=8)
 
     mlflow.set_experiment(experiment_name)
     log_experiment(experiment)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

@@ -8,8 +8,15 @@ from suprb.optimizer.rule import origin, mutation
 from suprb.optimizer.rule.nsga2 import NSGA2Novelty
 from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 
-from helpers import estimate_and_set_bounds, load_eggholder, init_rule_discovery_env, build_filename, visualize_rule_predictions
+from helpers import (
+    estimate_and_set_bounds,
+    load_eggholder,
+    init_rule_discovery_env,
+    build_filename,
+    visualize_rule_predictions,
+)
 from metrics import summarize_rule_set, save_metrics_to_csv
+
 
 def run():
     t0 = time()
@@ -23,12 +30,11 @@ def run():
         mu=mu,
         lmbda=32,
         origin_generation=origin.SquaredError(),
-        mutation=mutation.Normal(sigma=1.22,
-                                           matching_type=rule.matching.OrderedBound([-1, 1])),
+        mutation=mutation.Normal(sigma=1.22, matching_type=rule.matching.OrderedBound([-1, 1])),
         init=rule.initialization.MeanInit(
             fitness=rule.fitness.PlaceholderFitness(),
             model=Ridge(alpha=0.01, random_state=random_state),
-            matching_type=rule.matching.OrderedBound([-1, 1])
+            matching_type=rule.matching.OrderedBound([-1, 1]),
         ),
         metrics=metrics,
         novelty_mode="P",
@@ -56,8 +62,8 @@ def run():
         "results/results_metrics.csv",
         extra_info={
             "graph_filename": filename,
-             "metrics": ", ".join(metrics),
-        }
+            "metrics": ", ".join(metrics),
+        },
     )
 
 

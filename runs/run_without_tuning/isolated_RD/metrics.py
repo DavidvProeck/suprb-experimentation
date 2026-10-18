@@ -14,6 +14,7 @@ def rule_masks(rules: List[Any], X: np.ndarray) -> np.array:
     masks = [np.asarray(r.match(X), dtype=bool).ravel() for r in rules]
     return np.vstack(masks)
 
+
 def global_coverage(masks: np.ndarray, return_counts: bool = False):
     if masks.size == 0:
         return (0.0, np.zeros((0,), dtype=int)) if return_counts else 0.0
@@ -51,11 +52,10 @@ def overlap_metrics(masks: np.ndarray) -> Dict[str, float]:
             Aj = masks[j]
             inter = np.logical_and(Ai, Aj).sum()
             union = np.logical_or(Ai, Aj).sum()
-            jacc = (inter / union) if union > 0  else 0.0
+            jacc = (inter / union) if union > 0 else 0.0
             j_vals.append(jacc)
-    
-    mean_jaccard = float(np.mean(j_vals)) if j_vals else 0.0
 
+    mean_jaccard = float(np.mean(j_vals)) if j_vals else 0.0
 
     counts = masks.sum(axis=0).astype(float)
     covered = counts > 0
@@ -69,16 +69,17 @@ def overlap_metrics(masks: np.ndarray) -> Dict[str, float]:
         cumx = np.cumsum(x)
         gini_coverage = 1.0 + 1.0 / n - 2.0 * (cumx.sum() / (n * cumx[-1]))
 
-
     return {
         "mean_jaccard": mean_jaccard,
         "redundancy": redundancy,
         "gini_coverage": gini_coverage,
     }
 
+
 # ────────────────────────────────────────────────────────────────
 # Average Crowding Distance (uses rule.crowding_distance_)
 # ────────────────────────────────────────────────────────────────
+
 
 def average_crowding_distance(rules: List[Any], ignore_inf: bool = True) -> float:
     vals = []
@@ -89,16 +90,17 @@ def average_crowding_distance(rules: List[Any], ignore_inf: bool = True) -> floa
         if ignore_inf and np.isinf(v):
             continue
         vals.append(float(v))
-    
+
     return float(np.mean(vals)) if vals else 0.0
+
 
 # ────────────────────────────────────────────────────────────────
 # Average Accuracy (uses rule.error_)
 # ────────────────────────────────────────────────────────────────
 def average_mse(
-        rules: List[Any],
-        masks: Optional[np.ndarray] = None,
-        aggregation: str = "coverage_weighted",
+    rules: List[Any],
+    masks: Optional[np.ndarray] = None,
+    aggregation: str = "coverage_weighted",
 ) -> Dict[str, float]:
 
     per_rule_mse = []
@@ -108,7 +110,7 @@ def average_mse(
         sizes = masks.sum(axis=1).astype(float)
     else:
         sizes = None
-    
+
     for i, r in enumerate(rules):
         mse = float(getattr(r, "error_", np.nan))
         if not np.isfinite(mse):
@@ -117,13 +119,8 @@ def average_mse(
         per_rule_sizes.append(1.0 if sizes is None else sizes[i])
 
     if not per_rule_mse:
-        return {
-            "mean": 0.0,
-            "mean_uniform": 0.0,
-            "mean_coverage_weighted": 0.0,
-            "n_effective_rules": 0.0
-        }
-    
+        return {"mean": 0.0, "mean_uniform": 0.0, "mean_coverage_weighted": 0.0, "n_effective_rules": 0.0}
+
     vals = np.asarray(per_rule_mse, dtype=float)
     sizes = np.asarray(per_rule_sizes, dtype=float)
 
@@ -133,12 +130,12 @@ def average_mse(
         mean_weighted = float(np.sum(vals * weights))
     else:
         mean_weighted = mean_uniform
-    
+
     return {
         "mean": mean_weighted if aggregation == "coverage_weighted" else mean_uniform,
         "mean_uniform": mean_uniform,
         "mean_coverage_weighted": mean_weighted,
-        "n_effective_rules": int(len(vals))
+        "n_effective_rules": int(len(vals)),
     }
 
 
@@ -146,10 +143,10 @@ def average_mse(
 # Summary
 # ────────────────────────────────────────────────────────────────
 def summarize_rule_set(
-        rules: List[Any],
-        X: np.ndarray,
-        y: np.ndarray,
-        aggregation: str = "coverage_weighted",
+    rules: List[Any],
+    X: np.ndarray,
+    y: np.ndarray,
+    aggregation: str = "coverage_weighted",
 ) -> Dict[str, Any]:
     M = rule_masks(rules, X)
     cov, counts = global_coverage(M, return_counts=True)
@@ -172,13 +169,14 @@ def summarize_rule_set(
         },
     }
 
+
 # ────────────────────────────────────────────────────────────────
 # CSV saving
 # ────────────────────────────────────────────────────────────────
 def save_metrics_to_csv(
-        summary: Dict,
-        filepath: str,
-        extra_info: Dict,
+    summary: Dict,
+    filepath: str,
+    extra_info: Dict,
 ):
     filepath = Path(filepath)
     row = {

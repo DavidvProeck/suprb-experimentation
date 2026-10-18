@@ -22,16 +22,14 @@ def run(metrics_config):
         mu=mu,
         lmbda=64,
         origin_generation=origin.SquaredError(),
-        mutation=mutation.Normal(sigma=1.22,
-                                 matching_type=rule.matching.OrderedBound([-1, 1])
-                                 ),
+        mutation=mutation.Normal(sigma=1.22, matching_type=rule.matching.OrderedBound([-1, 1])),
         init=rule.initialization.MeanInit(
             fitness=rule.fitness.PlaceholderFitness(),
             model=Ridge(alpha=0.01, random_state=random_state),
-            matching_type=rule.matching.OrderedBound([-1, 1])),
-
+            matching_type=rule.matching.OrderedBound([-1, 1]),
+        ),
         n_jobs=4,
-        metrics=metrics_config
+        metrics=metrics_config,
     )
     init_rule_discovery_env(rule_discovery)
 
@@ -54,16 +52,16 @@ def run(metrics_config):
         extra_info={
             "graph_filename": filename,
             "metrics": ", ".join(metrics_config),
-        }
+        },
     )
 
 
 if __name__ == "__main__":
     metric_sets = [
-        ['error', 'volume'],
-        ['error', 'support'],
-        ['error', 'information_gain'],
-        ['error', 'variance_reduction'],
+        ["error", "volume"],
+        ["error", "support"],
+        ["error", "information_gain"],
+        ["error", "variance_reduction"],
     ]
 
     for metrics in metric_sets:
