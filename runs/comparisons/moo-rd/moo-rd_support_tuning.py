@@ -60,20 +60,13 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
             lmbda=64,      # <- tuned
             origin_generation=origin.SquaredError(),
             init=rule.initialization.MeanInit(
-                fitness=rule.fitness.MooFitness(),  # dummy fitness for MOO
+                fitness=rule.fitness.PlaceholderFitness(),  # dummy fitness for MOO
                 model=Ridge(alpha=0.01, random_state=random_state),
             ),
             mutation=mutation.Normal(
                 sigma=1.22  # <- tuned
             ),
-            fitness_objs=[
-                lambda r: r.error_,
-                lambda r: -np.count_nonzero(r.match_set_), # Support calculation
-            ],
-            fitness_objs_labels=[
-                "Error",
-                "-Support"
-            ],
+            metrics=['error', 'support'],
             profile=False,
         ),
         solution_composition=ga.GeneticAlgorithm(

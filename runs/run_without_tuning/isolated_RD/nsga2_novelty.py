@@ -1,13 +1,12 @@
 from datetime import timedelta
 from time import time
-
-import numpy as np
 from sklearn.linear_model import Ridge
 
 import suprb
 from suprb import rule
 from suprb.optimizer.rule import origin, mutation
-from suprb.optimizer.rule.nsga2 import NSGA2
+from suprb.optimizer.rule.nsga2 import NSGA2Novelty
+from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 
 from helpers import estimate_and_set_bounds, load_eggholder, init_rule_discovery_env, build_filename, visualize_rule_predictions
 from metrics import summarize_rule_set, save_metrics_to_csv
@@ -18,28 +17,24 @@ def run():
     X, y = load_eggholder(n_samples=250, noise=0.5, random_state=random_state)
 
     mu = 16
-    rule_discovery = NSGA2(
+    metrics = ["error"]
+    rule_discovery = NSGA2Novelty(
         n_iter=10,
         mu=mu,
-        lmbda=64,
+        lmbda=32,
         origin_generation=origin.SquaredError(),
         mutation=mutation.Normal(sigma=1.22,
-                                           matching_type=rule.matching.OrderedBound([-1, 1])
-                                 ),
+                                           matching_type=rule.matching.OrderedBound([-1, 1])),
         init=rule.initialization.MeanInit(
-            fitness=rule.fitness.MooFitness(),
+            fitness=rule.fitness.PlaceholderFitness(),
             model=Ridge(alpha=0.01, random_state=random_state),
-            matching_type=rule.matching.OrderedBound([-1, 1])),
-
-        n_jobs=4,
-        fitness_objs=[
-            lambda r: r.error_,
-            lambda r: -np.count_nonzero(r.match_set_),  # Support calculation
-        ],
-        fitness_objs_labels=[
-            "Error",
-            "-Support"
-        ],
+            matching_type=rule.matching.OrderedBound([-1, 1])
+        ),
+        metrics=metrics,
+        novelty_mode="P",
+        min_experience=2,
+        max_restarts=5,
+        keep_archive_across_restarts=True,
     )
     init_rule_discovery_env(rule_discovery)
 
@@ -52,16 +47,6 @@ def run():
     print(f"\nTotal runtime: {runtime}")
 
     filename = build_filename(rule_discovery)
-    # visualize_rule_predictions(
-    #     X,
-    #     y,
-    #     generated_rules,
-    #     runtime,
-    #     rule_discovery,
-    #     filename,
-    #     show_params=False,
-    #     subtitle=" - NSGA2+Support"
-    # )
 
     summary = summarize_rule_set(generated_rules, X, y)
     print("\nAverage error(MSE):", summary["average_error"])
@@ -71,6 +56,7 @@ def run():
         "results/results_metrics.csv",
         extra_info={
             "graph_filename": filename,
+             "metrics": ", ".join(metrics),
         }
     )
 

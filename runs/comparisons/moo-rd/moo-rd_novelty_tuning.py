@@ -26,7 +26,7 @@ from suprb.optimizer.rule import nsga2
 from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 from suprb.optimizer.rule.ns.novelty_search_type import MinimalCriteria
 
-from suprb.optimizer.rule.nsga2 import NSGA2Novelty_G_P
+from suprb.optimizer.rule.nsga2 import NSGA2Novelty
 
 random_state = 42
 
@@ -55,25 +55,24 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     X, y = shuffle(X, y, random_state=random_state)
 
     estimator = SupRB(
-        rule_discovery=NSGA2Novelty_G_P(
+        rule_discovery=NSGA2Novelty(
             n_iter=16,     # <- tuned
             mu=16,         # <- tuned
             lmbda=64,      # <- tuned
             origin_generation=origin.SquaredError(),
             init=rule.initialization.MeanInit(
-                fitness=rule.fitness.MooFitness(),  # dummy fitness for MOO
+                fitness=rule.fitness.PlaceholderFitness(),  # dummy fitness for MOO
                 model=Ridge(alpha=0.01, random_state=random_state),
             ),
             mutation=mutation.Normal(
                 sigma=1.22  # <- tuned
             ),
-            fitness_objs=[lambda r: r.error_],
-            fitness_objs_labels=["Error"], # novelty objective is added internally
+            metrics=['error'],
             novelty_calc=NoveltyCalculation(
                 k_neighbor=15,
                 #novelty_search_type=MinimalCriteria(min_examples_matched=15)  # <- tuned #TODO: Leads to warnings in crowding distance calculation.
             ),
-            novelty_mode="G",
+            novelty_mode="P",
             profile=False,
             min_experience=2, #Rules that match only one sample are considered trivial, so min_experience >= 2
             max_restarts=4,
@@ -148,7 +147,7 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
                 'solution_composition__init__mixing__experience_calculation__upper_bound', 20, 50)
 
 
-    experiment_name = f'MOO-RD-Novelty-G-tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
+    experiment_name = f'MOO-RD-Novelty-P-tuning j:{job_id} p:{problem}; r:{rule_amount}; f:{filter_subpopulation}; -e:{experience_calculation}' or study_name
     print(experiment_name)
     experiment = Experiment(name=experiment_name, verbose=10)
 

@@ -1,6 +1,6 @@
 # Etc
 
-results
+runs/run_without_tuning/isolated_RD/results
 Paretofront.png
 mlruns
 mlruns_csv

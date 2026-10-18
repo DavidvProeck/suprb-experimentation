@@ -25,7 +25,7 @@ import suprb.solution.mixing_model as mixing_model
 from suprb.optimizer.rule.ns.novelty_calculation import NoveltyCalculation
 from suprb.optimizer.rule.ns.novelty_search_type import MinimalCriteria
 
-from suprb.optimizer.rule.nsga2 import NSGA2VarianceReduction
+from suprb.optimizer.rule.nsga2 import NSGA2
 
 random_state = 42
 
@@ -54,24 +54,19 @@ def run(problem: str, job_id: str, rule_amount: int, filter_subpopulation: str,
     X, y = shuffle(X, y, random_state=random_state)
 
     estimator = SupRB(
-        rule_discovery=NSGA2VarianceReduction(
+        rule_discovery=NSGA2(
             n_iter=16,     # <- tuned
             mu=16,         # <- tuned
             lmbda=64,      # <- tuned
             origin_generation=origin.SquaredError(),
             init=rule.initialization.MeanInit(
-                fitness=rule.fitness.MooFitness(),  # dummy fitness for MOO
+                fitness=rule.fitness.PlaceholderFitness(),  # dummy fitness for MOO
                 model=Ridge(alpha=0.01, random_state=random_state),
             ),
             mutation=mutation.Normal(
                 sigma=1.22  # <- tuned
             ),
-            fitness_objs=[
-                lambda r: r.error_, # Information Gain objective is added internally
-            ],
-            fitness_objs_labels=[
-                "Error",
-            ],
+            metrics=['error', 'variance_reduction'],
             profile=False,
         ),
         solution_composition=ga.GeneticAlgorithm(
